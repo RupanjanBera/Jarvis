@@ -8,7 +8,7 @@
     
     <script>
         // --- 1. IMMEDIATE SECURITY CHECK ---
-        if (!localStorage.getItem('jarvis_user_id')) {
+        if (!localStorage.getItem('jarvis_role')) {
             window.location.href = 'login.html';
         }
     </script>
@@ -391,41 +391,18 @@
     <div id="settings-modal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">
-                <h2 style="font-family: 'Orbitron'">Personal Configuration</h2>
+                <h2 style="font-family: 'Orbitron'">System Config</h2>
                 <span class="material-icons-outlined" id="close-modal" style="cursor:pointer">close</span>
             </div>
 
             <div class="setting-row">
-                <span class="setting-label">Your Name</span>
-                <input type="text" id="username-input" placeholder="Enter your name" style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px;">
-            </div>
-
-            <div class="setting-row">
-                <span class="setting-label">Occupation</span>
-                <input type="text" id="occupation-input" placeholder="e.g., Software Developer, Student" style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px;">
-            </div>
-
-            <div class="setting-row">
-                <span class="setting-label">More About You</span>
-                <textarea id="about-input" placeholder="Tell me about yourself..." style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; height: 80px; resize: vertical;"></textarea>
-            </div>
-
-            <div class="setting-row">
-                <span class="setting-label">Custom Instructions</span>
-                <textarea id="instructions-input" placeholder="How should I respond to you? Any specific preferences?" style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; height: 80px; resize: vertical;"></textarea>
-            </div>
-
-            <div class="setting-row">
-                <span class="setting-label">AI Response Style</span>
-                <select id="tone-selector" class="setting-input">
-                    <option value="default">🤖 Default (Balanced)</option>
-                    <option value="professional">👔 Professional (Formal)</option>
-                    <option value="friendly">😊 Friendly (Casual)</option>
-                    <option value="candid">🎯 Candid (Direct)</option>
-                    <option value="quirky">🎭 Quirky (Playful)</option>
-                    <option value="efficient">⚡ Efficient (Concise)</option>
-                    <option value="nerdy">👓 Nerdy (Technical)</option>
-                    <option value="cynical">😒 Cynical (Skeptical)</option>
+                <span class="setting-label">AI Model Core</span>
+                <select id="model-selector" class="setting-input">
+                    <option value="meta/llama-3.1-405b-instruct">JARVIS Titan</option>
+                    <option value="meta/llama-3.1-70b-instruct">JARVIS Core</option>
+                    <option value="openai/gpt-oss-120b">CodeSmith V1</option>
+                    <option value="deepseek-ai/deepseek-v3.1-terminus">CodeSmith V2 Turbo</option>
+                    <option value="genexig_mode">J.A.R.V.I.S Genexig (Image Gen)</option>
                 </select>
             </div>
 
@@ -438,11 +415,8 @@
             </div>
 
             <div class="setting-row">
-                <span class="setting-label">Memory Management</span>
-                <div style="display: flex; gap: 10px;">
-                    <button id="view-memories-btn" style="background: #333; color: #fff; border: 1px solid #444; padding: 8px 12px; border-radius: 6px; cursor: pointer; flex: 1;">View Memories</button>
-                    <button id="clear-memories-btn" style="background: #ff4444; color: #fff; border: 1px solid #ff4444; padding: 8px 12px; border-radius: 6px; cursor: pointer; flex: 1;">Clear Memories</button>
-                </div>
+                <span class="setting-label">User Identity</span>
+                <input type="text" id="username-input" placeholder="Enter Name" style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px;">
             </div>
 
             <div class="setting-row">
@@ -450,26 +424,8 @@
                 <input type="range" id="fontsize-slider" min="12" max="20" value="16" style="width: 100%;">
             </div>
 
-            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                <button id="reset-settings" style="background: #444; color: #ccc; border: 1px solid #555; padding: 10px 20px; border-radius: 8px; cursor: pointer;">RESET</button>
-                <button id="save-settings" style="background: var(--accent-color); color: #000; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;">SAVE CHANGES</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Memory Viewer Modal -->
-    <div id="memory-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-box" style="max-width: 700px;">
-            <div class="modal-header">
-                <h2 style="font-family: 'Orbitron'">Your Memories</h2>
-                <span class="material-icons-outlined" id="close-memory-modal" style="cursor:pointer">close</span>
-            </div>
-            <div id="memories-list" style="max-height: 400px; overflow-y: auto; margin-top: 20px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                <!-- Memories will be loaded here -->
-            </div>
-            <div style="margin-top: 20px; display: flex; gap: 10px;">
-                <input type="text" id="new-memory-input" placeholder="Add a new memory..." style="flex-grow: 1; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px;">
-                <button id="add-memory-btn" style="background: var(--accent-color); color: #000; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">Add</button>
+            <div style="text-align: right;">
+                <button id="save-settings" style="background: var(--accent-color); color: #000; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;">APPLY CHANGES</button>
             </div>
         </div>
     </div>
@@ -582,27 +538,22 @@
     </main>
 
     <script>
-        // --- 1. System Configuration & State (Updated for User Isolation) ---
-        let userId = localStorage.getItem('jarvis_user_id');
-        if (!userId) {
-            window.location.href = 'login.html';
-        }
-
+        // --- 1. System Configuration & State (Updated with LocalStorage) ---
         const state = {
-            userId: userId,
             user: {
-                name: localStorage.getItem(userId + '_name') || 'User',
-                color: localStorage.getItem(userId + '_color') || '#00e5ff',
-                fontSize: localStorage.getItem(userId + '_font') || '16',
-                appLogo: localStorage.getItem(userId + '_app_logo') || null,
-                role: localStorage.getItem(userId + '_role') || 'guest',
-                credits: parseInt(localStorage.getItem(userId + '_credits') || '0'),
-                avatar: localStorage.getItem(userId + '_avatar'),
-                settings: JSON.parse(localStorage.getItem(userId + '_settings') || '{}'),
-                memories: JSON.parse(localStorage.getItem(userId + '_memory') || '[]')
+                name: localStorage.getItem('jarvis_user') || 'Admin',
+                color: localStorage.getItem('jarvis_color') || '#00e5ff',
+                fontSize: localStorage.getItem('jarvis_font') || '16',
+                appLogo: localStorage.getItem('jarvis_app_logo') || null,
+                role: localStorage.getItem('jarvis_role') || 'guest',
+                credits: parseInt(localStorage.getItem('jarvis_credits') || '0'),
+                avatar: localStorage.getItem('jarvis_avatar')
+            },
+            system: {
+                model: localStorage.getItem('jarvis_model') || 'meta/llama-3.1-405b-instruct'
             },
             chat: {
-                history: JSON.parse(localStorage.getItem(userId + '_history') || '[]'),
+                history: JSON.parse(localStorage.getItem('jarvis_history') || '[]'),
                 activeId: null,
                 currentFile: null,
                 webSearch: true
@@ -621,28 +572,15 @@
             fileName: document.getElementById('file-name-display'),
             historyList: document.getElementById('history-list'),
             settingsModal: document.getElementById('settings-modal'),
-            memoryModal: document.getElementById('memory-modal'),
-            memoriesList: document.getElementById('memories-list'),
-            newMemoryInput: document.getElementById('new-memory-input'),
-            addMemoryBtn: document.getElementById('add-memory-btn'),
-            viewMemoriesBtn: document.getElementById('view-memories-btn'),
-            clearMemoriesBtn: document.getElementById('clear-memories-btn'),
-            closeMemoryModal: document.getElementById('close-memory-modal'),
             accentPicker: document.getElementById('accent-picker'),
+            modelSelector: document.getElementById('model-selector'),
             
-            // New settings inputs
-            occupationInput: document.getElementById('occupation-input'),
-            aboutInput: document.getElementById('about-input'),
-            instructionsInput: document.getElementById('instructions-input'),
-            toneSelector: document.getElementById('tone-selector'),
-            resetSettingsBtn: document.getElementById('reset-settings'),
-
             // Logo Elements
             logoContainer: document.getElementById('app-logo-container'),
             logoInput: document.getElementById('app-logo-input'),
             defaultHelmet: document.getElementById('default-helmet-logo'),
 
-            // User Header Elements
+            // New User Header Elements
             headerName: document.getElementById('header-username'),
             headerCredits: document.getElementById('header-credits'),
             headerAvatar: document.getElementById('header-avatar'),
@@ -653,9 +591,8 @@
         // --- 3. Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             applySettings();
-            loadUserSettings();
-            applyAppLogo();
-            updateHeaderProfile();
+            applyAppLogo(); 
+            updateHeaderProfile(); // Initialize User Header
             renderHistory();
             connectNetwork();
             
@@ -688,22 +625,7 @@
 
         els.logoutBtn.addEventListener('click', () => {
             if(confirm('Terminate Session?')) {
-                const keysToRemove = [
-                    'jarvis_user_id',
-                    state.userId + '_name',
-                    state.userId + '_email',
-                    state.userId + '_avatar',
-                    state.userId + '_role',
-                    state.userId + '_credits',
-                    state.userId + '_settings',
-                    state.userId + '_memory',
-                    state.userId + '_history',
-                    state.userId + '_color',
-                    state.userId + '_font',
-                    state.userId + '_app_logo'
-                ];
-                
-                keysToRemove.forEach(key => localStorage.removeItem(key));
+                localStorage.clear();
                 window.location.href = 'login.html';
             }
         });
@@ -713,7 +635,7 @@
 
             if (state.user.credits > 0) {
                 state.user.credits--;
-                localStorage.setItem(state.userId + '_credits', state.user.credits.toString());
+                localStorage.setItem('jarvis_credits', state.user.credits.toString());
                 updateHeaderProfile();
                 return true;
             } else {
@@ -724,45 +646,16 @@
         }
 
         // --- 4. Settings & UI Customization ---
-        function loadUserSettings() {
-            const settings = state.user.settings;
-            
-            document.getElementById('username-input').value = settings.name || state.user.name;
-            els.occupationInput.value = settings.occupation || '';
-            els.aboutInput.value = settings.about || '';
-            els.instructionsInput.value = settings.instructions || '';
-            els.toneSelector.value = settings.tone || 'default';
-            els.accentPicker.value = state.user.color;
-            document.getElementById('fontsize-slider').value = state.user.fontSize;
-        }
-
         function applySettings() {
             document.documentElement.style.setProperty('--accent-color', state.user.color);
-            document.documentElement.style.setProperty('--accent-glow', state.user.color + '4D');
-            document.documentElement.style.setProperty('--msg-user-bg', state.user.color + '26');
+            document.documentElement.style.setProperty('--accent-glow', state.user.color + '4D'); 
+            document.documentElement.style.setProperty('--msg-user-bg', state.user.color + '26'); 
             document.body.style.fontSize = state.user.fontSize + 'px';
-        }
-
-        function saveUserSettings() {
-            const settings = {
-                name: document.getElementById('username-input').value,
-                occupation: els.occupationInput.value,
-                about: els.aboutInput.value,
-                instructions: els.instructionsInput.value,
-                tone: els.toneSelector.value,
-                preferences: state.user.settings.preferences || {}
-            };
             
-            state.user.settings = settings;
-            state.user.name = settings.name;
-            
-            localStorage.setItem(state.userId + '_settings', JSON.stringify(settings));
-            localStorage.setItem(state.userId + '_name', settings.name);
-            localStorage.setItem(state.userId + '_color', state.user.color);
-            localStorage.setItem(state.userId + '_font', state.user.fontSize);
-            
-            applySettings();
-            updateHeaderProfile();
+            els.accentPicker.value = state.user.color;
+            document.getElementById('username-input').value = state.user.name;
+            document.getElementById('fontsize-slider').value = state.user.fontSize;
+            els.modelSelector.value = state.system.model;
         }
 
         // Logo Handling
@@ -779,168 +672,33 @@
                 reader.onload = function(event) {
                     const base64String = event.target.result;
                     state.user.appLogo = base64String;
-                    localStorage.setItem(state.userId + '_app_logo', base64String);
+                    localStorage.setItem('jarvis_app_logo', base64String);
                     applyAppLogo();
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Memory Management
-        function renderMemories() {
-            els.memoriesList.innerHTML = '';
-            
-            if (state.user.memories.length === 0) {
-                els.memoriesList.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No memories yet. Start chatting!</div>';
-                return;
-            }
-            
-            state.user.memories.forEach((memory, index) => {
-                const memoryDiv = document.createElement('div');
-                memoryDiv.className = 'memory-item';
-                memoryDiv.style.cssText = `
-                    background: rgba(255,255,255,0.05);
-                    border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 8px;
-                    padding: 12px;
-                    margin-bottom: 10px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                `;
-                
-                memoryDiv.innerHTML = `
-                    <div style="flex-grow: 1;">
-                        <div style="color: var(--accent-color); font-size: 0.9rem; margin-bottom: 5px;">
-                            ${new Date(memory.timestamp).toLocaleDateString()}
-                        </div>
-                        <div>${memory.content}</div>
-                    </div>
-                    <button class="delete-memory-btn" data-index="${index}" style="
-                        background: transparent;
-                        border: none;
-                        color: #ff4444;
-                        cursor: pointer;
-                        padding: 5px;
-                        border-radius: 4px;
-                        margin-left: 10px;
-                    ">
-                        <span class="material-icons-outlined" style="font-size: 18px;">delete</span>
-                    </button>
-                `;
-                
-                els.memoriesList.appendChild(memoryDiv);
-            });
-            
-            document.querySelectorAll('.delete-memory-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
-                    deleteMemory(index);
-                });
-            });
-        }
-
-        function addMemory(content, type = 'auto') {
-            const memory = {
-                id: Date.now(),
-                content: content,
-                type: type,
-                timestamp: new Date().toISOString()
-            };
-            
-            state.user.memories.push(memory);
-            
-            if (state.user.memories.length > 100) {
-                state.user.memories = state.user.memories.slice(-100);
-            }
-            
-            localStorage.setItem(state.userId + '_memory', JSON.stringify(state.user.memories));
-            
-            if (els.memoryModal.style.display !== 'none') {
-                renderMemories();
-            }
-        }
-
-        function deleteMemory(index) {
-            if (confirm('Delete this memory?')) {
-                state.user.memories.splice(index, 1);
-                localStorage.setItem(state.userId + '_memory', JSON.stringify(state.user.memories));
-                renderMemories();
-            }
-        }
-
-        function clearAllMemories() {
-            if (confirm('Clear ALL memories? This cannot be undone.')) {
-                state.user.memories = [];
-                localStorage.setItem(state.userId + '_memory', JSON.stringify([]));
-                renderMemories();
-            }
-        }
-
-        // --- 5. Event Listeners for Settings ---
         document.getElementById('save-settings').addEventListener('click', () => {
             state.user.color = els.accentPicker.value;
+            state.user.name = document.getElementById('username-input').value;
             state.user.fontSize = document.getElementById('fontsize-slider').value;
+            state.system.model = els.modelSelector.value;
             
-            saveUserSettings();
+            localStorage.setItem('jarvis_user', state.user.name);
+            localStorage.setItem('jarvis_color', state.user.color);
+            localStorage.setItem('jarvis_font', state.user.fontSize);
+            localStorage.setItem('jarvis_model', state.system.model);
+            
+            applySettings();
+            updateHeaderProfile(); // Refresh name in header if changed
             els.settingsModal.style.display = 'none';
         });
 
-        document.getElementById('open-settings').addEventListener('click', () => {
-            loadUserSettings();
-            els.settingsModal.style.display = 'flex';
-        });
-        
+        document.getElementById('open-settings').addEventListener('click', () => els.settingsModal.style.display = 'flex');
         document.getElementById('close-modal').addEventListener('click', () => els.settingsModal.style.display = 'none');
 
-        els.viewMemoriesBtn.addEventListener('click', () => {
-            els.memoryModal.style.display = 'flex';
-            renderMemories();
-        });
-
-        els.closeMemoryModal.addEventListener('click', () => {
-            els.memoryModal.style.display = 'none';
-        });
-
-        els.addMemoryBtn.addEventListener('click', () => {
-            const content = els.newMemoryInput.value.trim();
-            if (content) {
-                addMemory(content, 'manual');
-                els.newMemoryInput.value = '';
-            }
-        });
-
-        els.newMemoryInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const content = els.newMemoryInput.value.trim();
-                if (content) {
-                    addMemory(content, 'manual');
-                    els.newMemoryInput.value = '';
-                }
-            }
-        });
-
-        els.clearMemoriesBtn.addEventListener('click', clearAllMemories);
-
-        els.resetSettingsBtn.addEventListener('click', () => {
-            if (confirm('Reset all settings to default?')) {
-                state.user.color = '#00e5ff';
-                els.accentPicker.value = state.user.color;
-                
-                state.user.fontSize = '16';
-                document.getElementById('fontsize-slider').value = state.user.fontSize;
-                
-                document.getElementById('username-input').value = state.user.name;
-                els.occupationInput.value = '';
-                els.aboutInput.value = '';
-                els.instructionsInput.value = '';
-                els.toneSelector.value = 'default';
-                
-                applySettings();
-            }
-        });
-
-        // --- 6. File Handling Logic ---
+        // --- 5. File Handling Logic ---
         document.getElementById('upload-btn').addEventListener('click', () => els.fileInput.click());
 
         els.fileInput.addEventListener('change', async (e) => {
@@ -975,7 +733,7 @@
                     els.fileChip.style.display = 'none';
                 }, 2000);
             }
-            els.fileInput.value = "";
+            els.fileInput.value = ""; 
         });
 
         document.getElementById('remove-file').addEventListener('click', () => {
@@ -1001,7 +759,7 @@
             return result.value;
         }
 
-        // --- 7. Enhanced Chat Logic with Memory Integration ---
+        // --- 6. Chat Logic (UPDATED WITH CREDIT CHECK) ---
         function startWithPrompt(text) {
             els.input.value = text;
             sendMessage();
@@ -1014,127 +772,36 @@
             const text = els.input.value.trim();
             if (!text && !state.chat.currentFile) return;
 
+            // *** CREDIT CHECK ***
             if (!checkCredits()) return;
 
             if (!state.chat.activeId) createNewChat();
-
-            const userContext = getUserContextPrompt();
-            const memoryContext = getMemoryContext();
-            const toneContext = getToneInstructions();
 
             let finalPrompt = text;
             
             if (state.chat.currentFile) {
                 addMessage('user', `[Attached: ${state.chat.currentFile.name}] ${text}`);
-                finalPrompt = `
-${userContext}
-${memoryContext}
-${toneContext}
-
---- FILE CONTEXT: "${state.chat.currentFile.name}" ---
-${state.chat.currentFile.content.substring(0, 20000)}
---- END FILE CONTEXT ---
-
-USER QUERY: ${text}`;
+                finalPrompt = `[SYSTEM CONTEXT: User attached file "${state.chat.currentFile.name}". Content:\n${state.chat.currentFile.content.substring(0, 20000)}...]\n\nUSER QUERY: ${text}`;
                 state.chat.currentFile = null;
                 els.fileChip.style.display = 'none';
             } else {
                 addMessage('user', text);
-                finalPrompt = `
-${userContext}
-${memoryContext}
-${toneContext}
-
-USER QUERY: ${text}`;
             }
 
             els.input.value = '';
             els.welcome.style.display = 'none';
 
-            const modelChoice = detectOptimalModel(text, state.chat.currentFile);
-            
             if (state.socket && state.socket.readyState === WebSocket.OPEN) {
                 state.socket.send(JSON.stringify({
                     type: "text_query",
                     text: finalPrompt,
                     user_name: state.user.name,
-                    user_context: state.user.settings,
-                    user_id: state.userId,
                     web_search_enabled: state.chat.webSearch,
-                    model: modelChoice,
-                    auto_model_selection: true
+                    model: state.system.model
                 }));
             } else {
                 addMessage('ai', "⚠ Network Offline. Attempting Reconnection...");
             }
-        }
-
-        function getUserContextPrompt() {
-            const settings = state.user.settings;
-            let context = `[USER PROFILE]
-Name: ${settings.name || state.user.name}`;
-            
-            if (settings.occupation) context += `\nOccupation: ${settings.occupation}`;
-            if (settings.about) context += `\nAbout: ${settings.about}`;
-            if (settings.instructions) context += `\nCustom Instructions: ${settings.instructions}`;
-            
-            return context;
-        }
-
-        function getMemoryContext() {
-            if (state.user.memories.length === 0) return '';
-            
-            let memories = state.user.memories.slice(-5).map(m => m.content).join('\n');
-            return `[PREVIOUS INTERACTIONS & MEMORIES]
-${memories}`;
-        }
-
-        function getToneInstructions() {
-            const tones = {
-                'default': 'Respond in a balanced, helpful tone.',
-                'professional': 'Respond formally and professionally. Use proper titles and maintain decorum.',
-                'friendly': 'Respond warmly and casually. Use emojis and friendly language.',
-                'candid': 'Be direct and honest. Don\'t sugarcoat.',
-                'quirky': 'Be playful and creative. Use humor and unconventional phrasing.',
-                'efficient': 'Be concise and to the point. Avoid unnecessary words.',
-                'nerdy': 'Use technical terms and detailed explanations. Show enthusiasm for complex topics.',
-                'cynical': 'Be skeptical and sarcastic. Question assumptions.'
-            };
-            
-            return `[RESPONSE STYLE]
-${tones[state.user.settings.tone] || tones.default}`;
-        }
-
-        function detectOptimalModel(text, fileContent = null) {
-            const textLower = text.toLowerCase();
-            
-            const codeKeywords = ['code', 'script', 'function', 'debug', 'algorithm', 'api', 'endpoint', 'program'];
-            if (codeKeywords.some(kw => textLower.includes(kw))) {
-                return 'deepseek-ai/deepseek-v3.1-terminus';
-            }
-            
-            const reasoningKeywords = ['analyze', 'compare', 'evaluate', 'explain', 'why', 'how', 'complex'];
-            if (reasoningKeywords.some(kw => textLower.includes(kw)) || 
-                (text.length > 200 && !textLower.includes('?'))) {
-                return 'meta/llama-3.1-405b-instruct';
-            }
-            
-            if (textLower.includes('image') || textLower.includes('picture') || 
-                textLower.includes('generate') || textLower.includes('create') ||
-                textLower.includes('draw') || textLower.includes('visual')) {
-                return 'genexig_mode';
-            }
-            
-            const simpleKeywords = ['hi', 'hello', 'hey', 'thanks', 'thank you', 'ok', 'yes', 'no'];
-            if (simpleKeywords.some(kw => textLower.includes(kw)) || text.length < 50) {
-                return 'meta/llama-3.1-70b-instruct';
-            }
-            
-            if (fileContent || textLower.includes('file') || textLower.includes('document')) {
-                return 'openai/gpt-oss-120b';
-            }
-            
-            return 'meta/llama-3.1-70b-instruct';
         }
 
         function addMessage(role, text) {
@@ -1156,18 +823,11 @@ ${tones[state.user.settings.tone] || tones.default}`;
         let streamBuffer = "";
 
         function connectNetwork() {
+            // Note: Update this URL to your backend if it changes
             state.socket = new WebSocket("wss://venice-postpupillary-coaxially.ngrok-free.dev/ws");
             
             state.socket.onopen = () => {
-                state.socket.send(JSON.stringify({
-                    type: "user_context",
-                    user_id: state.userId,
-                    user_data: {
-                        name: state.user.name,
-                        settings: state.user.settings,
-                        memories_count: state.user.memories.length
-                    }
-                }));
+                // Connection established (Header already updated by user profile)
             };
 
             state.socket.onmessage = (e) => {
@@ -1187,16 +847,8 @@ ${tones[state.user.settings.tone] || tones.default}`;
                         chat.messages[chat.messages.length - 1].text = streamBuffer;
                         saveHistory();
                     }
-                    
-                    extractMemoriesFromResponse(streamBuffer);
-                    
                     streamBuffer = "";
                     currentStreamEl = null;
-                }
-                else if (msg.type === "extracted_memory") {
-                    if (msg.memory && !state.user.memories.some(m => m.content === msg.memory)) {
-                        addMemory(msg.memory, 'ai_extracted');
-                    }
                 }
             };
 
@@ -1205,27 +857,7 @@ ${tones[state.user.settings.tone] || tones.default}`;
             };
         }
 
-        function extractMemoriesFromResponse(response) {
-            const sentences = response.split(/[.!?]+/);
-            const importantSentences = sentences.filter(s => {
-                const sentence = s.toLowerCase().trim();
-                return (
-                    (sentence.includes('you ') || sentence.includes('your ') || sentence.includes(state.user.name.toLowerCase())) &&
-                    (sentence.includes('like') || sentence.includes('prefer') || sentence.includes('enjoy') ||
-                     sentence.includes('hate') || sentence.includes('dislike') || sentence.includes('important')) &&
-                    sentence.length > 20
-                );
-            });
-            
-            if (importantSentences.length > 0) {
-                const memory = importantSentences[0].trim();
-                if (memory.length > 10 && !state.user.memories.some(m => m.content === memory)) {
-                    addMemory(memory, 'ai_extracted');
-                }
-            }
-        }
-
-        // --- 8. History Management ---
+        // --- 7. History Management ---
         function createNewChat() {
             const id = Date.now();
             const newChat = {
@@ -1269,7 +901,7 @@ ${tones[state.user.settings.tone] || tones.default}`;
 
             state.chat.activeId = id;
             els.welcome.style.display = 'none';
-            els.chatFeed.innerHTML = '';
+            els.chatFeed.innerHTML = ''; 
             
             chat.messages.forEach(m => {
                 const div = document.createElement('div');
@@ -1320,7 +952,7 @@ ${tones[state.user.settings.tone] || tones.default}`;
         }
 
         function saveHistory() {
-            localStorage.setItem(state.userId + '_history', JSON.stringify(state.chat.history));
+            localStorage.setItem('jarvis_history', JSON.stringify(state.chat.history));
         }
 
         document.getElementById('open-sidebar-btn').addEventListener('click', () => els.sidebar.classList.add('open'));
