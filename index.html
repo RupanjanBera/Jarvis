@@ -21,12 +21,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@300;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
-        /* --- System Variables (Original) --- */
+        /* --- System Variables --- */
         :root {
             --bg-dark: #050505;
             --bg-panel: rgba(20, 20, 25, 0.6);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --accent-color: #00e5ff; /* Default Cyan */
+            --accent-color: #00e5ff;
             --accent-glow: rgba(0, 229, 255, 0.3);
             --text-main: #ffffff;
             --text-muted: #8b9bb4;
@@ -46,14 +46,13 @@
                 radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 1) 0%, transparent 20%),
                 radial-gradient(circle at 90% 80%, var(--accent-glow) 0%, transparent 30%);
             color: var(--text-main);
-            /* CHANGED: Use dvh (Dynamic Viewport Height) for better mobile browser support */
             height: 100dvh; 
             display: flex;
             overflow: hidden;
             transition: background 0.5s ease;
         }
 
-        /* --- Sidebar (Advanced Glass) --- */
+        /* --- Sidebar --- */
         .sidebar {
             width: 320px;
             background: var(--bg-panel);
@@ -66,323 +65,132 @@
             position: relative;
         }
         
-        .sidebar-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        
-        .brand-container {
-            display: flex; align-items: center; gap: 12px;
-        }
+        .sidebar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .app-title { font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent-color); text-shadow: 0 0 10px var(--accent-glow); }
 
-        .app-title {
-            font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 2px;
-            color: var(--accent-color); text-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        /* LOGO STYLES */
-        .app-logo-trigger {
-            width: 35px; height: 35px; cursor: pointer;
-            transition: transform 0.3s, filter 0.3s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .app-logo-trigger:hover {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 5px var(--accent-color));
-        }
-        .helmet-svg {
-            width: 100%; height: 100%;
-            fill: var(--accent-color);
-            filter: drop-shadow(0 0 2px var(--accent-glow));
-        }
-        .custom-logo-img {
-            width: 100%; height: 100%; object-fit: contain;
-            border-radius: 50%;
-        }
+        .app-logo-trigger { width: 35px; height: 35px; cursor: pointer; transition: transform 0.3s, filter 0.3s; display: flex; align-items: center; justify-content: center; }
+        .app-logo-trigger:hover { transform: scale(1.1); filter: drop-shadow(0 0 5px var(--accent-color)); }
+        .helmet-svg { width: 100%; height: 100%; fill: var(--accent-color); filter: drop-shadow(0 0 2px var(--accent-glow)); }
+        .custom-logo-img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 
         .new-chat-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 12px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-main);
+            padding: 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;
             font-family: var(--font-ui); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; transition: all 0.2s;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
-        .new-chat-btn:hover {
-            background: var(--accent-color); color: #000;
-            box-shadow: 0 0 20px var(--accent-glow); border-color: var(--accent-color);
-        }
+        .new-chat-btn:hover { background: var(--accent-color); color: #000; box-shadow: 0 0 20px var(--accent-glow); border-color: var(--accent-color); }
 
-        .search-wrapper {
-            margin-top: 15px; position: relative;
-        }
-        .search-input {
-            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
-            padding: 10px 10px 10px 35px; border-radius: 8px; color: #fff; font-family: var(--font-body);
-        }
+        .search-wrapper { margin-top: 15px; position: relative; }
+        .search-input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 10px 10px 10px 35px; border-radius: 8px; color: #fff; font-family: var(--font-body); }
         .search-icon { position: absolute; left: 10px; top: 10px; font-size: 18px; color: var(--text-muted); }
 
-        .history-container {
-            flex-grow: 1; overflow-y: auto; margin-top: 20px; padding-right: 5px;
-        }
-        /* Custom Scrollbar */
+        .history-container { flex-grow: 1; overflow-y: auto; margin-top: 20px; padding-right: 5px; }
         .history-container::-webkit-scrollbar { width: 4px; }
         .history-container::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 2px; }
 
-        .history-group-title {
-            font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;
-            margin: 15px 0 5px 5px; font-family: var(--font-ui); font-weight: 700; letter-spacing: 1px;
-        }
-
-        .history-item {
-            padding: 10px 12px; border-radius: 8px; cursor: pointer;
-            color: var(--text-muted); font-size: 0.9rem;
-            display: flex; align-items: center; justify-content: space-between;
-            transition: all 0.2s; margin-bottom: 4px;
-            border: 1px solid transparent;
-        }
+        .history-group-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin: 15px 0 5px 5px; font-family: var(--font-ui); font-weight: 700; letter-spacing: 1px; }
+        .history-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; margin-bottom: 4px; border: 1px solid transparent; }
         .history-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        .history-item.active {
-            background: rgba(255,255,255,0.08); color: var(--accent-color);
-            border-color: var(--glass-border);
-        }
+        .history-item.active { background: rgba(255,255,255,0.08); color: var(--accent-color); border-color: var(--glass-border); }
         .history-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 180px; }
-        .delete-chat {
-            opacity: 0; transition: opacity 0.2s; color: #ff4444; padding: 4px; border-radius: 4px;
-        }
+        .delete-chat { opacity: 0; transition: opacity 0.2s; color: #ff4444; padding: 4px; border-radius: 4px; }
         .history-item:hover .delete-chat { opacity: 1; }
         .delete-chat:hover { background: rgba(255, 68, 68, 0.2); }
 
-        .sidebar-footer {
-            margin-top: auto; padding-top: 15px; border-top: 1px solid var(--glass-border);
-        }
+        .sidebar-footer { margin-top: auto; padding-top: 15px; border-top: 1px solid var(--glass-border); }
 
         /* --- Main Interface --- */
-        .main-content {
-            flex-grow: 1; display: flex; flex-direction: column; position: relative;
-        }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; position: relative; }
 
-        /* Header */
-        .main-header {
-            padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent);
-        }
+        .main-header { padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent); }
         .mobile-menu { display: none; color: var(--text-main); cursor: pointer; }
         
-        /* NEW: User Header Profile */
-        .user-header-profile {
-            display: flex; align-items: center; gap: 15px;
-            background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
-            padding: 5px 15px 5px 8px; border-radius: 30px;
-        }
-        .user-name-display {
-            font-family: 'Rajdhani'; font-weight: 700; color: #fff;
-            display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1;
-        }
+        .user-header-profile { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 5px 15px 5px 8px; border-radius: 30px; }
+        .user-name-display { font-family: 'Rajdhani'; font-weight: 700; color: #fff; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; }
         .user-credits-display { font-size: 0.7rem; color: var(--accent-color); }
-        .user-avatar-small {
-            width: 32px; height: 32px; border-radius: 50%;
-            border: 2px solid var(--accent-color); object-fit: cover;
-        }
-        .logout-btn-icon {
-            color: #ff4444; cursor: pointer; margin-left: 5px; transition: 0.3s;
-        }
+        .user-avatar-small { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent-color); object-fit: cover; }
+        .logout-btn-icon { color: #ff4444; cursor: pointer; margin-left: 5px; transition: 0.3s; }
         .logout-btn-icon:hover { transform: scale(1.1); color: #ff0000; }
 
-        /* Chat Area */
-        .chat-area {
-            flex-grow: 1; padding: 20px; overflow-y: auto;
-            display: flex; flex-direction: column; scroll-behavior: smooth;
-        }
+        .chat-area { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; scroll-behavior: smooth; }
         
-        /* Welcome Screen */
-        .welcome-container {
-            height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center;
-        }
-        .ai-logo {
-            width: 120px; height: 120px; border-radius: 50%;
-            border: 2px solid var(--accent-color);
-            box-shadow: 0 0 50px var(--accent-glow), inset 0 0 20px var(--accent-glow);
-            position: relative; margin-bottom: 30px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .ai-core {
-            width: 60px; height: 60px; background: var(--accent-color); border-radius: 50%;
-            box-shadow: 0 0 30px var(--accent-color);
-            animation: pulse 3s infinite ease-in-out;
-        }
+        .welcome-container { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .ai-logo { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--accent-color); box-shadow: 0 0 50px var(--accent-glow), inset 0 0 20px var(--accent-glow); position: relative; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; }
+        .ai-core { width: 60px; height: 60px; background: var(--accent-color); border-radius: 50%; box-shadow: 0 0 30px var(--accent-color); animation: pulse 3s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { transform: scale(0.9); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
 
         .welcome-title { font-family: 'Orbitron'; font-size: 2.5rem; margin-bottom: 10px; }
         .welcome-subtitle { color: var(--text-muted); margin-bottom: 40px; }
 
-        .features-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
-            max-width: 700px; width: 100%;
-        }
-        .feature-card {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
-            padding: 20px; border-radius: 15px; cursor: pointer; text-align: left;
-            transition: all 0.3s; position: relative; overflow: hidden;
-        }
-        .feature-card:hover {
-            transform: translateY(-5px); border-color: var(--accent-color);
-            background: rgba(255,255,255,0.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
+        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 700px; width: 100%; }
+        .feature-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 20px; border-radius: 15px; cursor: pointer; text-align: left; transition: all 0.3s; position: relative; overflow: hidden; }
+        .feature-card:hover { transform: translateY(-5px); border-color: var(--accent-color); background: rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .feature-card h3 { font-family: var(--font-ui); margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
         .feature-card p { font-size: 0.85rem; color: var(--text-muted); }
 
-        /* Messages */
         .message-row { display: flex; margin-bottom: 25px; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
         .message-row.user { justify-content: flex-end; }
-        
-        .msg-bubble {
-            max-width: 80%; padding: 15px 20px; border-radius: 20px;
-            font-size: 1rem; line-height: 1.6; position: relative;
-        }
-        .message-row.user .msg-bubble {
-            background: var(--msg-user-bg); border: 1px solid var(--accent-color);
-            color: #fff; border-top-right-radius: 4px;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-        .message-row.ai .msg-bubble {
-            background: var(--msg-ai-bg); border: 1px solid var(--glass-border);
-            border-top-left-radius: 4px;
-        }
-        
-        /* Markdown Styles */
+        .msg-bubble { max-width: 80%; padding: 15px 20px; border-radius: 20px; font-size: 1rem; line-height: 1.6; position: relative; }
+        .message-row.user .msg-bubble { background: var(--msg-user-bg); border: 1px solid var(--accent-color); color: #fff; border-top-right-radius: 4px; box-shadow: 0 0 15px var(--accent-glow); }
+        .message-row.ai .msg-bubble { background: var(--msg-ai-bg); border: 1px solid var(--glass-border); border-top-left-radius: 4px; }
         .msg-bubble pre { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--glass-border); }
         .msg-bubble code { font-family: 'Courier New', monospace; color: var(--accent-color); }
 
-        /* Input Zone */
-        .input-container {
-            padding: 20px; display: flex; justify-content: center; align-items: flex-end;
-            position: relative;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        }
-        
-        /* File Chip */
-        .file-chip {
-            position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%);
-            background: #1a1c23; padding: 8px 15px; border-radius: 20px;
-            border: 1px solid var(--accent-color); display: none; align-items: center; gap: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 10; animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .input-container { padding: 20px; display: flex; justify-content: center; align-items: flex-end; position: relative; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+        .file-chip { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); background: #1a1c23; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--accent-color); display: none; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 10; animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popUp { from { transform: translateX(-50%) scale(0.5); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
 
-        .input-bar {
-            width: 100%; max-width: 900px;
-            background: rgba(30, 30, 35, 0.8); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 30px;
-            padding: 8px; display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            transition: border 0.3s;
-        }
+        .input-bar { width: 100%; max-width: 900px; background: rgba(30, 30, 35, 0.8); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 30px; padding: 8px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); transition: border 0.3s; }
         .input-bar:focus-within { border-color: var(--accent-color); box-shadow: 0 0 20px var(--accent-glow); }
-
-        .tool-btn {
-            width: 40px; height: 40px; border-radius: 50%; border: none;
-            background: transparent; color: var(--text-muted); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.2s;
-        }
+        .tool-btn { width: 40px; height: 40px; border-radius: 50%; border: none; background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .tool-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        
-        .main-input {
-            flex-grow: 1; background: transparent; border: none; color: #fff;
-            padding: 10px; font-size: 1rem; max-height: 100px;
-        }
-        
-        .send-btn {
-            background: var(--accent-color); color: #000; border-radius: 50%;
-            width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border: none; transition: transform 0.2s;
-        }
+        .main-input { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px; font-size: 1rem; max-height: 100px; }
+        .send-btn { background: var(--accent-color); color: #000; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; transition: transform 0.2s; }
         .send-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--accent-glow); }
 
-        /* --- Settings Modal --- */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-            z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px);
-        }
-        .modal-box {
-            background: #15151a; border: 1px solid var(--glass-border);
-            width: 90%; max-width: 500px; border-radius: 20px; padding: 2rem;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-        .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .setting-row { margin-bottom: 20px; }
-        .setting-label { display: block; color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem; }
+        /* --- UPDATED MODAL STYLES --- */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-box { background: #15151a; border: 1px solid var(--glass-border); width: 90%; max-width: 600px; height: 80vh; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
         
-        input[type="color"] {
-            -webkit-appearance: none; border: none; width: 50px; height: 50px;
-            border-radius: 50%; overflow: hidden; cursor: pointer; padding: 0;
-        }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; }
+        .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; }
         
-        select.setting-input {
-            width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px;
-        }
+        .modal-tabs { display: flex; background: #111; border-bottom: 1px solid #333; }
+        .tab-btn { flex: 1; padding: 15px; background: transparent; border: none; color: #666; font-family: 'Orbitron'; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.3s; font-size: 0.9rem; }
+        .tab-btn.active { color: var(--accent-color); border-bottom-color: var(--accent-color); background: rgba(255,255,255,0.02); }
+        
+        .modal-body { flex-grow: 1; overflow-y: auto; padding: 25px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- MOBILE OPTIMIZATION --- */
+        .setting-group { margin-bottom: 25px; }
+        .setting-label { display: block; color: var(--text-muted); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .setting-input, .setting-select, .setting-area { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; font-family: var(--font-body); transition: 0.3s; }
+        .setting-input:focus, .setting-area:focus { border-color: var(--accent-color); outline: none; }
+        
+        /* Memory Items */
+        .memory-item { background: #1a1a1a; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #444; }
+        .memory-text { font-size: 0.9rem; color: #ddd; }
+        .memory-del { color: #ff4444; cursor: pointer; opacity: 0.6; padding: 5px; }
+        .memory-del:hover { opacity: 1; background: rgba(255, 68, 68, 0.1); border-radius: 5px; }
+
+        .btn-primary { background: var(--accent-color); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; font-family: 'Orbitron'; margin-top: 10px; }
+        .btn-primary:hover { box-shadow: 0 0 15px var(--accent-glow); }
+
         @media (max-width: 768px) {
-            /* Fix Sidebar Logic */
             .sidebar { position: fixed; height: 100%; transform: translateX(-100%); width: 280px; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
             .sidebar.open { transform: translateX(0); }
-            
             .mobile-menu { display: block; }
             .features-grid { grid-template-columns: 1fr; }
-            
-            /* Tighter Header */
             .main-header { padding: 10px 15px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 10; }
-            
-            /* Optimized Chat Area */
-            .chat-area { 
-                padding: 10px; 
-                padding-bottom: 10px; /* Less bottom padding so content hits the input bar */
-            }
-            
-            /* Wider Messages for Small Screens */
-            .msg-bubble { 
-                max-width: 92%; 
-                padding: 12px 15px; 
-                font-size: 0.95rem; 
-            }
-            .message-row { margin-bottom: 15px; }
-
-            /* Optimized Input Zone */
-            .input-container {
-                padding: 10px 10px 15px 10px; /* Reduced padding */
-                background: #050505; /* Solid background prevents see-through clutter */
-                border-top: 1px solid var(--glass-border);
-            }
-            
-            .input-bar {
-                padding: 5px 8px;
-                border-radius: 25px;
-            }
-            
-            /* File Chip Adjustment */
+            .chat-area { padding: 10px; padding-bottom: 10px; }
+            .msg-bubble { max-width: 92%; padding: 12px 15px; font-size: 0.95rem; }
+            .input-container { padding: 10px 10px 15px 10px; background: #050505; border-top: 1px solid var(--glass-border); }
+            .input-bar { padding: 5px 8px; border-radius: 25px; }
             .file-chip { bottom: 70px; width: 90%; justify-content: center; }
-
-            /* Prevent iOS Zoom on Input */
-            .main-input { font-size: 16px; }
-
-            /* Smaller Buttons */
-            .tool-btn { width: 35px; height: 35px; margin-right: 2px; }
-            .send-btn { width: 40px; height: 40px; margin-left: 2px; }
-            
-            /* Welcome Screen Tweaks */
-            .ai-logo { width: 90px; height: 90px; }
-            .ai-core { width: 45px; height: 45px; }
-            .welcome-title { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -391,41 +199,99 @@
     <div id="settings-modal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">
-                <h2 style="font-family: 'Orbitron'">System Config</h2>
+                <h2 style="font-family: 'Orbitron'; margin:0; font-size:1.2rem;">SYSTEM CONFIG</h2>
                 <span class="material-icons-outlined" id="close-modal" style="cursor:pointer">close</span>
             </div>
-
-            <div class="setting-row">
-                <span class="setting-label">AI Model Core</span>
-                <select id="model-selector" class="setting-input">
-                    <option value="meta/llama-3.1-405b-instruct">JARVIS Titan</option>
-                    <option value="meta/llama-3.1-70b-instruct">JARVIS Core</option>
-                    <option value="openai/gpt-oss-120b">CodeSmith V1</option>
-                    <option value="deepseek-ai/deepseek-v3.1-terminus">CodeSmith V2 Turbo</option>
-                    <option value="genexig_mode">J.A.R.V.I.S Genexig (Image Gen)</option>
-                </select>
+            
+            <div class="modal-tabs">
+                <button class="tab-btn active" onclick="switchTab('tab-personal')">IDENTITY</button>
+                <button class="tab-btn" onclick="switchTab('tab-memory')">MEMORY</button>
+                <button class="tab-btn" onclick="switchTab('tab-interface')">INTERFACE</button>
             </div>
 
-            <div class="setting-row">
-                <span class="setting-label">Accent Color</span>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <input type="color" id="accent-picker" value="#00e5ff">
-                    <span style="color: #fff; font-size: 0.9rem;">Interface tint</span>
+            <div class="modal-body">
+                <div id="tab-personal" class="tab-content active">
+                    <div class="setting-group">
+                        <span class="setting-label">Your Name</span>
+                        <input type="text" id="pref-name" class="setting-input" placeholder="How should I address you?">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <span class="setting-label">AI Base Style & Tone</span>
+                        <select id="pref-tone" class="setting-select">
+                            <option value="default">Default (Helpful & Polite)</option>
+                            <option value="professional">Professional (Executive)</option>
+                            <option value="friendly">Friendly (Casual)</option>
+                            <option value="candid">Candid (Direct/Honest)</option>
+                            <option value="quirky">Quirky (Fun)</option>
+                            <option value="efficient">Efficient (Robot/Minimal)</option>
+                            <option value="nerdy">Nerdy (Technical)</option>
+                            <option value="cynical">Cynical (Sarcastic)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <span class="setting-label">Occupation</span>
+                        <input type="text" id="pref-occupation" class="setting-input" placeholder="e.g. Developer, Student">
+                    </div>
+
+                    <div class="setting-group">
+                        <span class="setting-label">More About You (Bio)</span>
+                        <textarea id="pref-bio" class="setting-area" rows="2" placeholder="I am interested in..."></textarea>
+                    </div>
+
+                    <div class="setting-group">
+                        <span class="setting-label">Custom Instructions</span>
+                        <textarea id="pref-instructions" class="setting-area" rows="2" placeholder="Rules for the AI to follow..."></textarea>
+                    </div>
+                    
+                    <button class="btn-primary" id="save-prefs-btn">Update Profile</button>
                 </div>
-            </div>
 
-            <div class="setting-row">
-                <span class="setting-label">User Identity</span>
-                <input type="text" id="username-input" placeholder="Enter Name" style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px;">
-            </div>
+                <div id="tab-memory" class="tab-content">
+                    <div class="setting-group">
+                        <span class="setting-label">Add Memory Manually</span>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="new-memory-input" class="setting-input" placeholder="e.g. My project is due on Friday">
+                            <button id="add-memory-btn" style="background:var(--accent-color); border:none; border-radius:8px; width:50px; cursor:pointer; font-weight:bold;">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <span class="setting-label">Stored Memory Core</span>
+                        <div id="memory-list-container" style="max-height: 300px; overflow-y: auto;">
+                            </div>
+                    </div>
+                </div>
 
-            <div class="setting-row">
-                <span class="setting-label">Font Size</span>
-                <input type="range" id="fontsize-slider" min="12" max="20" value="16" style="width: 100%;">
-            </div>
+                <div id="tab-interface" class="tab-content">
+                    <div class="setting-group">
+                        <span class="setting-label">Accent Color</span>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <input type="color" id="accent-picker" value="#00e5ff" style="width:50px; height:50px; cursor:pointer; border:none; padding:0; border-radius:50%;">
+                            <span style="color: #888; font-size: 0.9rem;">System Tint</span>
+                        </div>
+                    </div>
 
-            <div style="text-align: right;">
-                <button id="save-settings" style="background: var(--accent-color); color: #000; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;">APPLY CHANGES</button>
+                    <div class="setting-group">
+                        <span class="setting-label">System Font Size</span>
+                        <input type="range" id="fontsize-slider" min="12" max="20" value="16" style="width: 100%;">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <span class="setting-label">Model Architecture</span>
+                        <div style="padding:15px; background:#1a1a1a; border:1px solid #333; border-radius:8px; color:#888; font-size:0.85rem; line-height:1.5;">
+                            <strong style="color:var(--accent-color);">AUTO-PILOT ENGAGED</strong><br>
+                            The system now automatically selects the optimal neural model based on your query complexity:
+                            <ul style="margin-left:20px; margin-top:5px;">
+                                <li><strong>Reasoning:</strong> Llama 3.1 405B</li>
+                                <li><strong>Coding:</strong> DeepSeek V3 / GPT-OSS</li>
+                                <li><strong>Visuals:</strong> Stable Diffusion 3</li>
+                                <li><strong>Speed:</strong> Llama 70B Turbo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -441,7 +307,6 @@
                 </div>
                 <input type="file" id="app-logo-input" accept="image/*" style="display: none;">
             </div>
-            
             <span class="material-icons-outlined mobile-menu" id="close-sidebar-btn">close</span>
         </div>
 
@@ -454,13 +319,12 @@
             <input type="text" class="search-input" id="search-history" placeholder="Search Logs...">
         </div>
 
-        <div class="history-container" id="history-list">
-            </div>
+        <div class="history-container" id="history-list"></div>
 
         <div class="sidebar-footer">
             <div class="history-item" id="open-settings">
                 <span style="display: flex; align-items: center; gap: 10px;">
-                    <span class="material-icons-outlined">settings</span> Preferences
+                    <span class="material-icons-outlined">settings</span> System Config
                 </span>
             </div>
         </div>
@@ -495,13 +359,13 @@
                         <h3><span class="material-icons-outlined" style="color: #ff4444;">security</span> Security Audit</h3>
                         <p>Upload logs or code for vulnerability assessment.</p>
                     </div>
-                    <div class="feature-card" onclick="startWithPrompt('Generate an image of a futuristic cyberpunk city with neon lights. Aspect ratio 16:9.')">
+                    <div class="feature-card" onclick="startWithPrompt('Generate an image of a futuristic cyberpunk city. Aspect ratio 16:9.')">
                         <h3><span class="material-icons-outlined" style="color: #44ff44;">image</span> J.A.R.V.I.S Genexig</h3>
                         <p>Create visual representations using Stable Diffusion.</p>
                     </div>
-                    <div class="feature-card" onclick="startWithPrompt('Summarize the attached document.')">
-                        <h3><span class="material-icons-outlined" style="color: #ffff44;">description</span> Data Synthesis</h3>
-                        <p>Compress large datasets into actionable insights.</p>
+                    <div class="feature-card" onclick="startWithPrompt('Write a Python script to automate file sorting.')">
+                        <h3><span class="material-icons-outlined" style="color: #ffff44;">code</span> CodeSmith V2</h3>
+                        <p>Generate, debug, and refactor complex code.</p>
                     </div>
                     <div class="feature-card" onclick="startWithPrompt('Explain Quantum Entanglement simply.')">
                         <h3><span class="material-icons-outlined" style="color: #4444ff;">school</span> Knowledge Base</h3>
@@ -538,9 +402,10 @@
     </main>
 
     <script>
-        // --- 1. System Configuration & State (Updated with LocalStorage) ---
+        // --- 1. System Configuration & State ---
         const state = {
             user: {
+                id: localStorage.getItem('jarvis_email') || 'guest_' + Date.now(), // Uses email as ID or random guest ID
                 name: localStorage.getItem('jarvis_user') || 'Admin',
                 color: localStorage.getItem('jarvis_color') || '#00e5ff',
                 fontSize: localStorage.getItem('jarvis_font') || '16',
@@ -549,9 +414,8 @@
                 credits: parseInt(localStorage.getItem('jarvis_credits') || '0'),
                 avatar: localStorage.getItem('jarvis_avatar')
             },
-            system: {
-                model: localStorage.getItem('jarvis_model') || 'meta/llama-3.1-405b-instruct'
-            },
+            prefs: {}, // To be loaded from backend
+            memories: [], // To be loaded from backend
             chat: {
                 history: JSON.parse(localStorage.getItem('jarvis_history') || '[]'),
                 activeId: null,
@@ -573,14 +437,18 @@
             historyList: document.getElementById('history-list'),
             settingsModal: document.getElementById('settings-modal'),
             accentPicker: document.getElementById('accent-picker'),
-            modelSelector: document.getElementById('model-selector'),
             
-            // Logo Elements
+            // Preferences Inputs
+            pName: document.getElementById('pref-name'),
+            pTone: document.getElementById('pref-tone'),
+            pOcc: document.getElementById('pref-occupation'),
+            pBio: document.getElementById('pref-bio'),
+            pInst: document.getElementById('pref-instructions'),
+            memList: document.getElementById('memory-list-container'),
+
+            // Logo & Header
             logoContainer: document.getElementById('app-logo-container'),
             logoInput: document.getElementById('app-logo-input'),
-            defaultHelmet: document.getElementById('default-helmet-logo'),
-
-            // New User Header Elements
             headerName: document.getElementById('header-username'),
             headerCredits: document.getElementById('header-credits'),
             headerAvatar: document.getElementById('header-avatar'),
@@ -592,18 +460,20 @@
         document.addEventListener('DOMContentLoaded', () => {
             applySettings();
             applyAppLogo(); 
-            updateHeaderProfile(); // Initialize User Header
+            updateHeaderProfile(); 
             renderHistory();
-            connectNetwork();
+            connectNetwork(); // Websocket Connection
             
             if (window.pdfjsLib) {
                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
             }
         });
 
-        // --- 3.1 User Profile Functions ---
+        // --- 4. User Profile & Preferences Logic ---
         function updateHeaderProfile() {
-            els.headerName.innerText = state.user.name.toUpperCase();
+            // Priority: Name from Backend Prefs > LocalStorage > Default
+            const displayName = state.prefs.name || state.user.name;
+            els.headerName.innerText = displayName.toUpperCase();
             
             if (state.user.role === 'verified') {
                 els.headerCredits.innerText = "ACCESS: UNLIMITED";
@@ -623,148 +493,220 @@
             }
         }
 
-        els.logoutBtn.addEventListener('click', () => {
-            if(confirm('Terminate Session?')) {
-                localStorage.clear();
-                window.location.href = 'login.html';
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function populateSettings() {
+            els.pName.value = state.prefs.name || "";
+            els.pTone.value = state.prefs.tone || "default";
+            els.pOcc.value = state.prefs.occupation || "";
+            els.pBio.value = state.prefs.bio || "";
+            els.pInst.value = state.prefs.instructions || "";
+            updateHeaderProfile();
+        }
+
+        function updateMemoryUI() {
+            els.memList.innerHTML = "";
+            if (state.memories.length === 0) {
+                els.memList.innerHTML = '<div style="color:#666; font-size:0.8rem; padding:5px;">No memories stored.</div>';
+                return;
+            }
+            state.memories.forEach(mem => {
+                const div = document.createElement('div');
+                div.className = "memory-item";
+                div.innerHTML = `
+                    <span class="memory-text">${mem}</span>
+                    <span class="material-icons-outlined memory-del" onclick="deleteMemory('${mem.replace(/'/g, "\\'")}')">delete</span>
+                `;
+                els.memList.appendChild(div);
+            });
+        }
+
+        // --- 5. Settings Save & Actions ---
+        document.getElementById('save-prefs-btn').addEventListener('click', () => {
+            // 1. Collect Data
+            const newPrefs = {
+                name: els.pName.value,
+                tone: els.pTone.value,
+                occupation: els.pOcc.value,
+                bio: els.pBio.value,
+                instructions: els.pInst.value
+            };
+
+            // 2. Send to Backend
+            if (state.socket && state.socket.readyState === WebSocket.OPEN) {
+                state.socket.send(JSON.stringify({
+                    type: "update_prefs",
+                    prefs: newPrefs
+                }));
+            }
+
+            // 3. Update Local Visuals
+            state.prefs = newPrefs;
+            updateHeaderProfile();
+            els.settingsModal.style.display = 'none';
+        });
+
+        document.getElementById('add-memory-btn').addEventListener('click', () => {
+            const val = document.getElementById('new-memory-input').value.trim();
+            if (val && state.socket) {
+                state.socket.send(JSON.stringify({
+                    type: "manage_memory",
+                    action: "add",
+                    payload: val
+                }));
+                document.getElementById('new-memory-input').value = "";
             }
         });
 
-        function checkCredits() {
-            if (state.user.role === 'verified') return true;
-
-            if (state.user.credits > 0) {
-                state.user.credits--;
-                localStorage.setItem('jarvis_credits', state.user.credits.toString());
-                updateHeaderProfile();
-                return true;
-            } else {
-                alert("GUEST PROTOCOL: LIMIT REACHED. PLEASE LOG IN.");
-                window.location.href = 'login.html';
-                return false;
+        window.deleteMemory = (val) => {
+            if (confirm("Permanently delete this memory?") && state.socket) {
+                state.socket.send(JSON.stringify({
+                    type: "manage_memory",
+                    action: "delete",
+                    payload: val
+                }));
             }
-        }
+        };
 
-        // --- 4. Settings & UI Customization ---
+        // --- 6. Core UI Functions ---
         function applySettings() {
             document.documentElement.style.setProperty('--accent-color', state.user.color);
             document.documentElement.style.setProperty('--accent-glow', state.user.color + '4D'); 
             document.documentElement.style.setProperty('--msg-user-bg', state.user.color + '26'); 
             document.body.style.fontSize = state.user.fontSize + 'px';
-            
             els.accentPicker.value = state.user.color;
-            document.getElementById('username-input').value = state.user.name;
             document.getElementById('fontsize-slider').value = state.user.fontSize;
-            els.modelSelector.value = state.system.model;
         }
 
-        // Logo Handling
+        // Visual Accent Picker
+        els.accentPicker.addEventListener('change', (e) => {
+            state.user.color = e.target.value;
+            localStorage.setItem('jarvis_color', state.user.color);
+            applySettings();
+        });
+
+        document.getElementById('fontsize-slider').addEventListener('input', (e) => {
+            state.user.fontSize = e.target.value;
+            localStorage.setItem('jarvis_font', state.user.fontSize);
+            applySettings();
+        });
+
+        // App Logo
         function applyAppLogo() {
-            if (state.user.appLogo) {
-                els.logoContainer.innerHTML = `<img src="${state.user.appLogo}" class="custom-logo-img" alt="Logo">`;
-            }
+            if (state.user.appLogo) els.logoContainer.innerHTML = `<img src="${state.user.appLogo}" class="custom-logo-img" alt="Logo">`;
         }
         els.logoContainer.addEventListener('click', () => els.logoInput.click());
         els.logoInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(event) {
-                    const base64String = event.target.result;
-                    state.user.appLogo = base64String;
-                    localStorage.setItem('jarvis_app_logo', base64String);
+                reader.onload = (event) => {
+                    state.user.appLogo = event.target.result;
+                    localStorage.setItem('jarvis_app_logo', state.user.appLogo);
                     applyAppLogo();
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        document.getElementById('save-settings').addEventListener('click', () => {
-            state.user.color = els.accentPicker.value;
-            state.user.name = document.getElementById('username-input').value;
-            state.user.fontSize = document.getElementById('fontsize-slider').value;
-            state.system.model = els.modelSelector.value;
-            
-            localStorage.setItem('jarvis_user', state.user.name);
-            localStorage.setItem('jarvis_color', state.user.color);
-            localStorage.setItem('jarvis_font', state.user.fontSize);
-            localStorage.setItem('jarvis_model', state.system.model);
-            
-            applySettings();
-            updateHeaderProfile(); // Refresh name in header if changed
-            els.settingsModal.style.display = 'none';
-        });
-
+        // Modal Toggles
         document.getElementById('open-settings').addEventListener('click', () => els.settingsModal.style.display = 'flex');
         document.getElementById('close-modal').addEventListener('click', () => els.settingsModal.style.display = 'none');
+        els.logoutBtn.addEventListener('click', () => { if(confirm('Terminate Session?')) { localStorage.clear(); window.location.href = 'login.html'; }});
 
-        // --- 5. File Handling Logic ---
+        // --- 7. WebSocket & Networking (Updated for new backend) ---
+        let currentStreamEl = null;
+        let streamBuffer = "";
+
+        function connectNetwork() {
+            state.socket = new WebSocket("ws://localhost:8000/ws");
+            
+            state.socket.onopen = () => {
+                // Handshake: Send User ID to load specific memory
+                state.socket.send(JSON.stringify({
+                    type: "init_handshake",
+                    user_id: state.user.id
+                }));
+            };
+
+            state.socket.onmessage = (e) => {
+                const msg = JSON.parse(e.data);
+                
+                if (msg.type === "user_data_sync") {
+                    // Populate UI with data from backend
+                    state.prefs = msg.prefs;
+                    state.memories = msg.memories;
+                    populateSettings();
+                    updateMemoryUI();
+                }
+                else if (msg.type === "llm_chunk") {
+                    if (!currentStreamEl) currentStreamEl = addMessage('ai', "");
+                    streamBuffer += msg.text;
+                    currentStreamEl.innerHTML = marked.parse(streamBuffer);
+                    els.chatFeed.scrollTop = els.chatFeed.scrollHeight;
+                }
+                else if (msg.type === "llm_end") {
+                    // Save to history
+                    const chat = state.chat.history.find(c => c.id === state.chat.activeId);
+                    if (chat && chat.messages.length > 0) {
+                        chat.messages[chat.messages.length - 1].text = streamBuffer;
+                        saveHistory();
+                    }
+                    streamBuffer = "";
+                    currentStreamEl = null;
+                }
+                else if (msg.type === "status") {
+                    console.log("System:", msg.message);
+                }
+            };
+
+            state.socket.onclose = () => setTimeout(connectNetwork, 3000);
+        }
+
+        // --- 8. File Handling ---
         document.getElementById('upload-btn').addEventListener('click', () => els.fileInput.click());
-
         els.fileInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
             els.fileChip.style.display = 'flex';
             els.fileName.textContent = `Analyzing ${file.name}...`;
-
             try {
                 let content = "";
-                if (file.type === "application/pdf") {
-                    content = await readPDF(file);
-                } else if (file.name.endsWith(".docx")) {
-                    content = await readDOCX(file);
-                } else {
-                    content = await file.text();
-                }
+                if (file.type === "application/pdf") content = await readPDF(file);
+                else if (file.name.endsWith(".docx")) content = await readDOCX(file);
+                else content = await file.text();
 
-                state.chat.currentFile = {
-                    name: file.name,
-                    content: content
-                };
-                
+                state.chat.currentFile = { name: file.name, content: content };
                 els.fileName.textContent = file.name;
-
             } catch (err) {
                 console.error(err);
-                els.fileName.textContent = "Error Reading File";
-                setTimeout(() => {
-                    state.chat.currentFile = null;
-                    els.fileChip.style.display = 'none';
-                }, 2000);
+                els.fileName.textContent = "Error";
+                setTimeout(() => { state.chat.currentFile = null; els.fileChip.style.display = 'none'; }, 2000);
             }
             els.fileInput.value = ""; 
         });
-
-        document.getElementById('remove-file').addEventListener('click', () => {
-            state.chat.currentFile = null;
-            els.fileChip.style.display = 'none';
-        });
+        document.getElementById('remove-file').addEventListener('click', () => { state.chat.currentFile = null; els.fileChip.style.display = 'none'; });
 
         async function readPDF(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            const ab = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(ab).promise;
             let text = "";
             for (let i = 1; i <= pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const content = await page.getTextContent();
-                text += content.items.map(item => item.str).join(" ") + "\n";
+                text += (await (await pdf.getPage(i)).getTextContent()).items.map(item => item.str).join(" ") + "\n";
             }
             return text;
         }
-
         async function readDOCX(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-            return result.value;
+            return (await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() })).value;
         }
 
-        // --- 6. Chat Logic (UPDATED WITH CREDIT CHECK) ---
-        function startWithPrompt(text) {
-            els.input.value = text;
-            sendMessage();
-        }
-
+        // --- 9. Chat Logic ---
+        function startWithPrompt(text) { els.input.value = text; sendMessage(); }
         document.getElementById('send-btn').addEventListener('click', sendMessage);
         els.input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
 
@@ -772,16 +714,23 @@
             const text = els.input.value.trim();
             if (!text && !state.chat.currentFile) return;
 
-            // *** CREDIT CHECK ***
-            if (!checkCredits()) return;
+            // Simple Guest Check
+            if (state.user.role !== 'verified') {
+                if (state.user.credits > 0) {
+                    state.user.credits--;
+                    localStorage.setItem('jarvis_credits', state.user.credits);
+                    updateHeaderProfile();
+                } else {
+                    alert("GUEST LIMIT REACHED."); return;
+                }
+            }
 
             if (!state.chat.activeId) createNewChat();
 
             let finalPrompt = text;
-            
             if (state.chat.currentFile) {
                 addMessage('user', `[Attached: ${state.chat.currentFile.name}] ${text}`);
-                finalPrompt = `[SYSTEM CONTEXT: User attached file "${state.chat.currentFile.name}". Content:\n${state.chat.currentFile.content.substring(0, 20000)}...]\n\nUSER QUERY: ${text}`;
+                finalPrompt = `[FILE CONTEXT: ${state.chat.currentFile.name}]\n${state.chat.currentFile.content.substring(0,20000)}\n\nUSER: ${text}`;
                 state.chat.currentFile = null;
                 els.fileChip.style.display = 'none';
             } else {
@@ -795,12 +744,10 @@
                 state.socket.send(JSON.stringify({
                     type: "text_query",
                     text: finalPrompt,
-                    user_name: state.user.name,
-                    web_search_enabled: state.chat.webSearch,
-                    model: state.system.model
+                    // Note: No model sent. Backend handles Auto-Selection.
                 }));
             } else {
-                addMessage('ai', "⚠ Network Offline. Attempting Reconnection...");
+                addMessage('ai', "⚠ Network Offline.");
             }
         }
 
@@ -810,7 +757,6 @@
             div.innerHTML = `<div class="msg-bubble">${role === 'ai' ? marked.parse(text) : text}</div>`;
             els.chatFeed.appendChild(div);
             els.chatFeed.scrollTop = els.chatFeed.scrollHeight;
-
             const chat = state.chat.history.find(c => c.id === state.chat.activeId);
             if (chat) {
                 chat.messages.push({ role, text });
@@ -819,150 +765,63 @@
             return div.querySelector('.msg-bubble');
         }
 
-        let currentStreamEl = null;
-        let streamBuffer = "";
-
-        function connectNetwork() {
-            // Note: Update this URL to your backend if it changes
-            state.socket = new WebSocket("wss://venice-postpupillary-coaxially.ngrok-free.dev/ws");
-            
-            state.socket.onopen = () => {
-                // Connection established (Header already updated by user profile)
-            };
-
-            state.socket.onmessage = (e) => {
-                const msg = JSON.parse(e.data);
-                
-                if (msg.type === "llm_chunk") {
-                    if (!currentStreamEl) {
-                        currentStreamEl = addMessage('ai', "");
-                    }
-                    streamBuffer += msg.text;
-                    currentStreamEl.innerHTML = marked.parse(streamBuffer);
-                    els.chatFeed.scrollTop = els.chatFeed.scrollHeight;
-                }
-                else if (msg.type === "llm_end") {
-                    const chat = state.chat.history.find(c => c.id === state.chat.activeId);
-                    if (chat && chat.messages.length > 0) {
-                        chat.messages[chat.messages.length - 1].text = streamBuffer;
-                        saveHistory();
-                    }
-                    streamBuffer = "";
-                    currentStreamEl = null;
-                }
-            };
-
-            state.socket.onclose = () => {
-                setTimeout(connectNetwork, 3000);
-            };
-        }
-
-        // --- 7. History Management ---
+        // --- 10. History Logic ---
         function createNewChat() {
             const id = Date.now();
-            const newChat = {
-                id: id,
-                title: "New Sequence " + new Date().toLocaleTimeString(),
-                messages: []
-            };
+            const newChat = { id: id, title: "Sequence " + new Date().toLocaleTimeString(), messages: [] };
             state.chat.history.unshift(newChat);
             state.chat.activeId = id;
-            
             els.chatFeed.innerHTML = '';
             els.chatFeed.appendChild(els.welcome);
             els.welcome.style.display = 'flex';
-            
-            saveHistory();
-            renderHistory();
+            saveHistory(); renderHistory();
         }
-
         document.getElementById('new-chat-btn').addEventListener('click', createNewChat);
 
-        function deleteChat(id, event) {
-            event.stopPropagation();
-            if(!confirm("Purge this sequence logs?")) return;
-
+        function deleteChat(id, e) {
+            e.stopPropagation();
+            if(!confirm("Purge logs?")) return;
             state.chat.history = state.chat.history.filter(c => c.id !== id);
-            
-            if(state.chat.activeId === id) {
-                state.chat.activeId = null;
-                els.chatFeed.innerHTML = '';
-                els.chatFeed.appendChild(els.welcome);
-                els.welcome.style.display = 'flex';
-            }
-            
-            saveHistory();
-            renderHistory();
+            if(state.chat.activeId === id) { state.chat.activeId = null; els.chatFeed.innerHTML=''; els.chatFeed.appendChild(els.welcome); els.welcome.style.display='flex'; }
+            saveHistory(); renderHistory();
         }
 
         function loadChat(id) {
             const chat = state.chat.history.find(c => c.id === id);
             if (!chat) return;
-
             state.chat.activeId = id;
             els.welcome.style.display = 'none';
-            els.chatFeed.innerHTML = ''; 
-            
+            els.chatFeed.innerHTML = '';
             chat.messages.forEach(m => {
                 const div = document.createElement('div');
                 div.className = `message-row ${m.role}`;
                 div.innerHTML = `<div class="msg-bubble">${m.role === 'ai' ? marked.parse(m.text) : m.text}</div>`;
                 els.chatFeed.appendChild(div);
             });
-            els.chatFeed.scrollTop = els.chatFeed.scrollHeight;
-            
             els.sidebar.classList.remove('open');
             renderHistory();
         }
 
         function renderHistory() {
             els.historyList.innerHTML = '';
-            if(state.chat.history.length === 0) {
-                els.historyList.innerHTML = '<div style="padding:10px; color:#555; font-size:0.8rem;">NO LOGS FOUND</div>';
-                return;
-            }
-
-            const title = document.createElement('div');
-            title.className = 'history-group-title';
-            title.innerText = "Recent Logs";
-            els.historyList.appendChild(title);
-
+            if(state.chat.history.length === 0) { els.historyList.innerHTML='<div style="padding:10px; color:#555;">NO LOGS</div>'; return; }
             state.chat.history.forEach(chat => {
                 const item = document.createElement('div');
                 item.className = `history-item ${chat.id === state.chat.activeId ? 'active' : ''}`;
-                
-                let displayTitle = chat.title;
-                if(chat.messages.length > 0) {
-                    const firstMsg = chat.messages.find(m => m.role === 'user');
-                    if(firstMsg) displayTitle = firstMsg.text.substring(0, 25);
-                }
-
-                item.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span class="material-icons-outlined" style="font-size:16px;">chat_bubble_outline</span>
-                        <span class="history-text">${displayTitle}</span>
-                    </div>
-                    <span class="material-icons-outlined delete-chat">delete</span>
-                `;
-
+                item.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span class="material-icons-outlined" style="font-size:16px;">chat_bubble_outline</span><span class="history-text">${chat.title}</span></div><span class="material-icons-outlined delete-chat">delete</span>`;
                 item.onclick = () => loadChat(chat.id);
                 item.querySelector('.delete-chat').onclick = (e) => deleteChat(chat.id, e);
                 els.historyList.appendChild(item);
             });
         }
-
-        function saveHistory() {
-            localStorage.setItem('jarvis_history', JSON.stringify(state.chat.history));
-        }
-
+        function saveHistory() { localStorage.setItem('jarvis_history', JSON.stringify(state.chat.history)); }
+        
         document.getElementById('open-sidebar-btn').addEventListener('click', () => els.sidebar.classList.add('open'));
         document.getElementById('close-sidebar-btn').addEventListener('click', () => els.sidebar.classList.remove('open'));
-        
-        document.getElementById('web-search-toggle').addEventListener('click', function() {
-            state.chat.webSearch = !state.chat.webSearch;
-            this.style.color = state.chat.webSearch ? state.user.color : 'var(--text-muted)';
-        });
+        document.getElementById('web-search-toggle').addEventListener('click', function() { state.chat.webSearch = !state.chat.webSearch; this.style.color = state.chat.webSearch ? state.user.color : 'var(--text-muted)'; });
 
     </script>
 </body>
 </html>
+</html>
+
