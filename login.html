@@ -194,60 +194,24 @@
     </div>
 
     <script>
-        // --- AUTH LOGIC (UPDATED FOR USER ISOLATION) ---
+        // --- AUTH LOGIC (Same as before) ---
         function handleCredentialResponse(response) {
             const payload = decodeJwt(response.credential);
             
-            // Generate unique user ID for storage isolation
-            const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            
-            // Store user-specific data with user ID prefix
-            localStorage.setItem('jarvis_user_id', userId);
-            localStorage.setItem(userId + '_name', payload.name);
-            localStorage.setItem(userId + '_email', payload.email);
-            localStorage.setItem(userId + '_avatar', payload.picture);
-            localStorage.setItem(userId + '_role', 'verified');
-            localStorage.setItem(userId + '_token', response.credential);
-            
-            // Initialize user-specific settings
-            const userSettings = {
-                name: payload.name,
-                occupation: '',
-                about: '',
-                instructions: '',
-                tone: 'default',
-                preferences: {}
-            };
-            localStorage.setItem(userId + '_settings', JSON.stringify(userSettings));
-            
-            // Initialize user-specific memory
-            localStorage.setItem(userId + '_memory', JSON.stringify([]));
-            
+            localStorage.setItem('jarvis_user', payload.name);
+            localStorage.setItem('jarvis_email', payload.email);
+            localStorage.setItem('jarvis_avatar', payload.picture);
+            localStorage.setItem('jarvis_role', 'verified');
+            localStorage.setItem('jarvis_token', response.credential);
+
             window.location.href = 'index.html';
         }
 
         function handleGuestMode() {
-            // Generate unique guest ID
-            const guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            
-            localStorage.setItem('jarvis_user_id', guestId);
-            localStorage.setItem(guestId + '_name', 'Guest User');
-            localStorage.setItem(guestId + '_role', 'guest');
-            localStorage.setItem(guestId + '_credits', '100');
-            
-            // Initialize guest-specific settings
-            const guestSettings = {
-                name: 'Guest User',
-                occupation: '',
-                about: '',
-                instructions: '',
-                tone: 'default',
-                preferences: {}
-            };
-            localStorage.setItem(guestId + '_settings', JSON.stringify(guestSettings));
-            
-            // Initialize guest-specific memory
-            localStorage.setItem(guestId + '_memory', JSON.stringify([]));
+            localStorage.setItem('jarvis_user', 'Guest User');
+            localStorage.setItem('jarvis_role', 'guest');
+            localStorage.setItem('jarvis_credits', '100');
+            localStorage.removeItem('jarvis_avatar'); 
             
             window.location.href = 'index.html';
         }
@@ -262,8 +226,7 @@
         }
 
         // Auto-redirect if already logged in
-        const userId = localStorage.getItem('jarvis_user_id');
-        if(userId) {
+        if(localStorage.getItem('jarvis_role')) {
             window.location.href = 'index.html';
         }
     </script>
