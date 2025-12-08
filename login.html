@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMORIA // SECURITY</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22none%22 stroke=%22%2300f3ff%22 stroke-width=%225%22/><circle cx=%2250%22 cy=%2250%22 r=%2220%22 fill=%22%2300f3ff%22/></svg>">
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --bg-dark: #080808;
+            --panel: #111111;
+            --border: #333333;
+            --text-gray: #888888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* --- LOGIN CONTAINER --- */
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        /* Top Accent Bar */
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        /* Corner Accents */
+        .corner {
+            position: absolute; width: 10px; height: 10px;
+            border: 1px solid var(--text-gray);
+            transition: 0.3s;
+        }
+        .tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+        .tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+        .bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+        .br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+        .login-container:hover .corner { border-color: var(--primary); }
+
+        /* HEADER */
+        .header { text-align: center; margin-bottom: 40px; }
+        
+        .logo-icon {
+            font-size: 48px; color: var(--primary); margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+        
+        h1 {
+            font-family: 'Orbitron'; font-size: 24px; letter-spacing: 4px;
+            margin-bottom: 5px; text-transform: uppercase;
+        }
+        
+        .subtitle {
+            color: var(--text-gray); font-size: 14px; letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* GOOGLE BUTTON AREA */
+        .auth-section { margin-bottom: 30px; }
+        
+        /* Custom wrapper to ensure Google button looks sharp */
+        .google-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 5px;
+            transition: border-color 0.3s;
+        }
+        .google-wrapper:hover { border-color: #555; }
+
+        /* DIVIDER */
+        .divider {
+            display: flex; align-items: center; gap: 15px;
+            color: var(--text-gray); font-size: 12px; letter-spacing: 1px;
+            margin: 25px 0;
+        }
+        .line { flex: 1; height: 1px; background: #333; }
+
+        /* GUEST BUTTON */
+        .guest-btn {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-gray);
+            font-family: 'Orbitron';
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .guest-btn:hover {
+            border-color: var(--primary);
+            color: #fff;
+            background: rgba(0, 243, 255, 0.05);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
+        }
+
+        .guest-btn::after {
+            content: '>>';
+            position: absolute; right: 20px; opacity: 0;
+            transition: 0.3s;
+        }
+        .guest-btn:hover::after { opacity: 1; right: 15px; }
+
+        /* FOOTER */
+        .status {
+            position: absolute; bottom: -40px; width: 100%; left: 0;
+            text-align: center; color: #444; font-size: 10px; letter-spacing: 2px;
+            font-family: 'Orbitron';
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+
+        <div class="header">
+            <span class="material-icons-outlined logo-icon">fingerprint</span>
+            <h1>J.A.R.V.I.S.</h1>
+            <div class="subtitle">System Identity Verification</div>
+        </div>
+
+        <div class="auth-section">
+            <div id="g_id_onload"
+                 data-client_id="971723044178-n91t8i15nf9kgj4lj57kmst9lk3p8cii.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false"
+                 data-theme="filled_black">
+            </div>
+            
+            <div class="google-wrapper">
+                <div class="g_id_signin" 
+                     data-type="standard" 
+                     data-size="large" 
+                     data-theme="filled_black" 
+                     data-text="continue_with" 
+                     data-shape="rectangular" 
+                     data-logo_alignment="center"
+                     data-width="310">
+                </div>
+            </div>
+        </div>
+
+        <div class="divider">
+            <div class="line"></div> ALTERNATE PROTOCOL <div class="line"></div>
+        </div>
+
+        <button class="guest-btn" onclick="handleGuestMode()">
+            Initialize Guest Mode
+        </button>
+        
+        <div class="status">SECURE CONNECTION // PORT 443</div>
+    </div>
+
+    <script>
+        // --- AUTH LOGIC (UPDATED FOR USER ISOLATION) ---
+        function handleCredentialResponse(response) {
+            const payload = decodeJwt(response.credential);
+            
+            // Generate unique user ID for storage isolation
+            const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Store user-specific data with user ID prefix
+            localStorage.setItem('jarvis_user_id', userId);
+            localStorage.setItem(userId + '_name', payload.name);
+            localStorage.setItem(userId + '_email', payload.email);
+            localStorage.setItem(userId + '_avatar', payload.picture);
+            localStorage.setItem(userId + '_role', 'verified');
+            localStorage.setItem(userId + '_token', response.credential);
+            
+            // Initialize user-specific settings
+            const userSettings = {
+                name: payload.name,
+                occupation: '',
+                about: '',
+                instructions: '',
+                tone: 'default',
+                preferences: {}
+            };
+            localStorage.setItem(userId + '_settings', JSON.stringify(userSettings));
+            
+            // Initialize user-specific memory
+            localStorage.setItem(userId + '_memory', JSON.stringify([]));
+            
+            window.location.href = 'index.html';
+        }
+
+        function handleGuestMode() {
+            // Generate unique guest ID
+            const guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            localStorage.setItem('jarvis_user_id', guestId);
+            localStorage.setItem(guestId + '_name', 'Guest User');
+            localStorage.setItem(guestId + '_role', 'guest');
+            localStorage.setItem(guestId + '_credits', '100');
+            
+            // Initialize guest-specific settings
+            const guestSettings = {
+                name: 'Guest User',
+                occupation: '',
+                about: '',
+                instructions: '',
+                tone: 'default',
+                preferences: {}
+            };
+            localStorage.setItem(guestId + '_settings', JSON.stringify(guestSettings));
+            
+            // Initialize guest-specific memory
+            localStorage.setItem(guestId + '_memory', JSON.stringify([]));
+            
+            window.location.href = 'index.html';
+        }
+
+        function decodeJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        // Auto-redirect if already logged in
+        const userId = localStorage.getItem('jarvis_user_id');
+        if(userId) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

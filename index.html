@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>J.A.R.V.I.S. - Advanced Interface</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22none%22 stroke=%22%2300f3ff%22 stroke-width=%225%22/><circle cx=%2250%22 cy=%2250%22 r=%2220%22 fill=%22%2300f3ff%22/></svg>">
+    
+    <script>
+        // --- 1. IMMEDIATE SECURITY CHECK ---
+        if (!localStorage.getItem('jarvis_user_id')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.18/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@300;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- System Variables (Original) --- */
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: rgba(20, 20, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent-color: #00e5ff; /* Default Cyan */
+            --accent-glow: rgba(0, 229, 255, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #8b9bb4;
+            --font-ui: 'Rajdhani', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+            --msg-user-bg: rgba(0, 229, 255, 0.15);
+            --msg-ai-bg: rgba(255, 255, 255, 0.03);
+            --anim-speed: 0.3s;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, var(--accent-glow) 0%, transparent 30%);
+            color: var(--text-main);
+            /* CHANGED: Use dvh (Dynamic Viewport Height) for better mobile browser support */
+            height: 100dvh; 
+            display: flex;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        /* --- Sidebar (Advanced Glass) --- */
+        .sidebar {
+            width: 320px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-right: 1px solid var(--glass-border);
+            display: flex; flex-direction: column;
+            padding: 1.5rem;
+            transition: transform var(--anim-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            position: relative;
+        }
+        
+        .sidebar-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .brand-container {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .app-title {
+            font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 2px;
+            color: var(--accent-color); text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* LOGO STYLES */
+        .app-logo-trigger {
+            width: 35px; height: 35px; cursor: pointer;
+            transition: transform 0.3s, filter 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .app-logo-trigger:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 5px var(--accent-color));
+        }
+        .helmet-svg {
+            width: 100%; height: 100%;
+            fill: var(--accent-color);
+            filter: drop-shadow(0 0 2px var(--accent-glow));
+        }
+        .custom-logo-img {
+            width: 100%; height: 100%; object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .new-chat-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 12px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-family: var(--font-ui); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .new-chat-btn:hover {
+            background: var(--accent-color); color: #000;
+            box-shadow: 0 0 20px var(--accent-glow); border-color: var(--accent-color);
+        }
+
+        .search-wrapper {
+            margin-top: 15px; position: relative;
+        }
+        .search-input {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+            padding: 10px 10px 10px 35px; border-radius: 8px; color: #fff; font-family: var(--font-body);
+        }
+        .search-icon { position: absolute; left: 10px; top: 10px; font-size: 18px; color: var(--text-muted); }
+
+        .history-container {
+            flex-grow: 1; overflow-y: auto; margin-top: 20px; padding-right: 5px;
+        }
+        /* Custom Scrollbar */
+        .history-container::-webkit-scrollbar { width: 4px; }
+        .history-container::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 2px; }
+
+        .history-group-title {
+            font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;
+            margin: 15px 0 5px 5px; font-family: var(--font-ui); font-weight: 700; letter-spacing: 1px;
+        }
+
+        .history-item {
+            padding: 10px 12px; border-radius: 8px; cursor: pointer;
+            color: var(--text-muted); font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.2s; margin-bottom: 4px;
+            border: 1px solid transparent;
+        }
+        .history-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .history-item.active {
+            background: rgba(255,255,255,0.08); color: var(--accent-color);
+            border-color: var(--glass-border);
+        }
+        .history-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 180px; }
+        .delete-chat {
+            opacity: 0; transition: opacity 0.2s; color: #ff4444; padding: 4px; border-radius: 4px;
+        }
+        .history-item:hover .delete-chat { opacity: 1; }
+        .delete-chat:hover { background: rgba(255, 68, 68, 0.2); }
+
+        .sidebar-footer {
+            margin-top: auto; padding-top: 15px; border-top: 1px solid var(--glass-border);
+        }
+
+        /* --- Main Interface --- */
+        .main-content {
+            flex-grow: 1; display: flex; flex-direction: column; position: relative;
+        }
+
+        /* Header */
+        .main-header {
+            padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent);
+        }
+        .mobile-menu { display: none; color: var(--text-main); cursor: pointer; }
+        
+        /* NEW: User Header Profile */
+        .user-header-profile {
+            display: flex; align-items: center; gap: 15px;
+            background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+            padding: 5px 15px 5px 8px; border-radius: 30px;
+        }
+        .user-name-display {
+            font-family: 'Rajdhani'; font-weight: 700; color: #fff;
+            display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1;
+        }
+        .user-credits-display { font-size: 0.7rem; color: var(--accent-color); }
+        .user-avatar-small {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 2px solid var(--accent-color); object-fit: cover;
+        }
+        .logout-btn-icon {
+            color: #ff4444; cursor: pointer; margin-left: 5px; transition: 0.3s;
+        }
+        .logout-btn-icon:hover { transform: scale(1.1); color: #ff0000; }
+
+        /* Chat Area */
+        .chat-area {
+            flex-grow: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; scroll-behavior: smooth;
+        }
+        
+        /* Welcome Screen */
+        .welcome-container {
+            height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+        }
+        .ai-logo {
+            width: 120px; height: 120px; border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 50px var(--accent-glow), inset 0 0 20px var(--accent-glow);
+            position: relative; margin-bottom: 30px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ai-core {
+            width: 60px; height: 60px; background: var(--accent-color); border-radius: 50%;
+            box-shadow: 0 0 30px var(--accent-color);
+            animation: pulse 3s infinite ease-in-out;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(0.9); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
+
+        .welcome-title { font-family: 'Orbitron'; font-size: 2.5rem; margin-bottom: 10px; }
+        .welcome-subtitle { color: var(--text-muted); margin-bottom: 40px; }
+
+        .features-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+            max-width: 700px; width: 100%;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 20px; border-radius: 15px; cursor: pointer; text-align: left;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px); border-color: var(--accent-color);
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .feature-card h3 { font-family: var(--font-ui); margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .feature-card p { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* Messages */
+        .message-row { display: flex; margin-bottom: 25px; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .message-row.user { justify-content: flex-end; }
+        
+        .msg-bubble {
+            max-width: 80%; padding: 15px 20px; border-radius: 20px;
+            font-size: 1rem; line-height: 1.6; position: relative;
+        }
+        .message-row.user .msg-bubble {
+            background: var(--msg-user-bg); border: 1px solid var(--accent-color);
+            color: #fff; border-top-right-radius: 4px;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        .message-row.ai .msg-bubble {
+            background: var(--msg-ai-bg); border: 1px solid var(--glass-border);
+            border-top-left-radius: 4px;
+        }
+        
+        /* Markdown Styles */
+        .msg-bubble pre { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--glass-border); }
+        .msg-bubble code { font-family: 'Courier New', monospace; color: var(--accent-color); }
+
+        /* Input Zone */
+        .input-container {
+            padding: 20px; display: flex; justify-content: center; align-items: flex-end;
+            position: relative;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        
+        /* File Chip */
+        .file-chip {
+            position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%);
+            background: #1a1c23; padding: 8px 15px; border-radius: 20px;
+            border: 1px solid var(--accent-color); display: none; align-items: center; gap: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 10; animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popUp { from { transform: translateX(-50%) scale(0.5); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
+
+        .input-bar {
+            width: 100%; max-width: 900px;
+            background: rgba(30, 30, 35, 0.8); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 30px;
+            padding: 8px; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transition: border 0.3s;
+        }
+        .input-bar:focus-within { border-color: var(--accent-color); box-shadow: 0 0 20px var(--accent-glow); }
+
+        .tool-btn {
+            width: 40px; height: 40px; border-radius: 50%; border: none;
+            background: transparent; color: var(--text-muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+        .tool-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        
+        .main-input {
+            flex-grow: 1; background: transparent; border: none; color: #fff;
+            padding: 10px; font-size: 1rem; max-height: 100px;
+        }
+        
+        .send-btn {
+            background: var(--accent-color); color: #000; border-radius: 50%;
+            width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: none; transition: transform 0.2s;
+        }
+        .send-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--accent-glow); }
+
+        /* --- Settings Modal --- */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .modal-box {
+            background: #15151a; border: 1px solid var(--glass-border);
+            width: 90%; max-width: 500px; border-radius: 20px; padding: 2rem;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .setting-row { margin-bottom: 20px; }
+        .setting-label { display: block; color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem; }
+        
+        input[type="color"] {
+            -webkit-appearance: none; border: none; width: 50px; height: 50px;
+            border-radius: 50%; overflow: hidden; cursor: pointer; padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; }
+        
+        select.setting-input {
+            width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px;
+        }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 768px) {
+            /* Fix Sidebar Logic */
+            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); width: 280px; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+            .sidebar.open { transform: translateX(0); }
+            
+            .mobile-menu { display: block; }
+            .features-grid { grid-template-columns: 1fr; }
+            
+            /* Tighter Header */
+            .main-header { padding: 10px 15px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 10; }
+            
+            /* Optimized Chat Area */
+            .chat-area { 
+                padding: 10px; 
+                padding-bottom: 10px; /* Less bottom padding so content hits the input bar */
+            }
+            
+            /* Wider Messages for Small Screens */
+            .msg-bubble { 
+                max-width: 92%; 
+                padding: 12px 15px; 
+                font-size: 0.95rem; 
+            }
+            .message-row { margin-bottom: 15px; }
+
+            /* Optimized Input Zone */
+            .input-container {
+                padding: 10px 10px 15px 10px; /* Reduced padding */
+                background: #050505; /* Solid background prevents see-through clutter */
+                border-top: 1px solid var(--glass-border);
+            }
+            
+            .input-bar {
+                padding: 5px 8px;
+                border-radius: 25px;
+            }
+            
+            /* File Chip Adjustment */
+            .file-chip { bottom: 70px; width: 90%; justify-content: center; }
+
+            /* Prevent iOS Zoom on Input */
+            .main-input { font-size: 16px; }
+
+            /* Smaller Buttons */
+            .tool-btn { width: 35px; height: 35px; margin-right: 2px; }
+            .send-btn { width: 40px; height: 40px; margin-left: 2px; }
+            
+            /* Welcome Screen Tweaks */
+            .ai-logo { width: 90px; height: 90px; }
+            .ai-core { width: 45px; height: 45px; }
+            .welcome-title { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 style="font-family: 'Orbitron'">Personal Configuration</h2>
+                <span class="material-icons-outlined" id="close-modal" style="cursor:pointer">close</span>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">Your Name</span>
+                <input type="text" id="username-input" placeholder="Enter your name" style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px;">
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">Occupation</span>
+                <input type="text" id="occupation-input" placeholder="e.g., Software Developer, Student" style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px;">
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">More About You</span>
+                <textarea id="about-input" placeholder="Tell me about yourself..." style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; height: 80px; resize: vertical;"></textarea>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">Custom Instructions</span>
+                <textarea id="instructions-input" placeholder="How should I respond to you? Any specific preferences?" style="width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; height: 80px; resize: vertical;"></textarea>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">AI Response Style</span>
+                <select id="tone-selector" class="setting-input">
+                    <option value="default">🤖 Default (Balanced)</option>
+                    <option value="professional">👔 Professional (Formal)</option>
+                    <option value="friendly">😊 Friendly (Casual)</option>
+                    <option value="candid">🎯 Candid (Direct)</option>
+                    <option value="quirky">🎭 Quirky (Playful)</option>
+                    <option value="efficient">⚡ Efficient (Concise)</option>
+                    <option value="nerdy">👓 Nerdy (Technical)</option>
+                    <option value="cynical">😒 Cynical (Skeptical)</option>
+                </select>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">Accent Color</span>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <input type="color" id="accent-picker" value="#00e5ff">
+                    <span style="color: #fff; font-size: 0.9rem;">Interface tint</span>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">Memory Management</span>
+                <div style="display: flex; gap: 10px;">
+                    <button id="view-memories-btn" style="background: #333; color: #fff; border: 1px solid #444; padding: 8px 12px; border-radius: 6px; cursor: pointer; flex: 1;">View Memories</button>
+                    <button id="clear-memories-btn" style="background: #ff4444; color: #fff; border: 1px solid #ff4444; padding: 8px 12px; border-radius: 6px; cursor: pointer; flex: 1;">Clear Memories</button>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">Font Size</span>
+                <input type="range" id="fontsize-slider" min="12" max="20" value="16" style="width: 100%;">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                <button id="reset-settings" style="background: #444; color: #ccc; border: 1px solid #555; padding: 10px 20px; border-radius: 8px; cursor: pointer;">RESET</button>
+                <button id="save-settings" style="background: var(--accent-color); color: #000; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;">SAVE CHANGES</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Memory Viewer Modal -->
+    <div id="memory-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 style="font-family: 'Orbitron'">Your Memories</h2>
+                <span class="material-icons-outlined" id="close-memory-modal" style="cursor:pointer">close</span>
+            </div>
+            <div id="memories-list" style="max-height: 400px; overflow-y: auto; margin-top: 20px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <!-- Memories will be loaded here -->
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <input type="text" id="new-memory-input" placeholder="Add a new memory..." style="flex-grow: 1; padding: 10px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px;">
+                <button id="add-memory-btn" style="background: var(--accent-color); color: #000; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-container">
+                <span class="app-title">J.A.R.V.I.S.</span>
+                <div class="app-logo-trigger" id="app-logo-container" title="Click to upload logo">
+                    <svg class="helmet-svg" id="default-helmet-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C7.58 2 4 5.58 4 10v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-4.42-3.58-8-8-8zm0 2c3.31 0 6 2.69 6 6v1h-3.5l-1-3-1 3H9l-1-3-1 3H5v-1c0-3.31 2.69-6 6-6zm-4 9h2v4H8v-4zm6 4h-2v-4h2v4z"/>
+                    </svg>
+                </div>
+                <input type="file" id="app-logo-input" accept="image/*" style="display: none;">
+            </div>
+            
+            <span class="material-icons-outlined mobile-menu" id="close-sidebar-btn">close</span>
+        </div>
+
+        <div class="new-chat-btn" id="new-chat-btn">
+            <span class="material-icons-outlined">add</span> New Sequence
+        </div>
+
+        <div class="search-wrapper">
+            <span class="material-icons-outlined search-icon">search</span>
+            <input type="text" class="search-input" id="search-history" placeholder="Search Logs...">
+        </div>
+
+        <div class="history-container" id="history-list">
+            </div>
+
+        <div class="sidebar-footer">
+            <div class="history-item" id="open-settings">
+                <span style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-icons-outlined">settings</span> Preferences
+                </span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="main-header">
+            <span class="material-icons-outlined mobile-menu" id="open-sidebar-btn" style="font-size: 24px;">menu</span>
+            <div style="flex-grow: 1;"></div>
+            
+            <div class="user-header-profile">
+                <img id="header-avatar" class="user-avatar-small" src="" style="display:none;">
+                <span id="header-default-icon" class="material-icons-outlined user-avatar-small" style="display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.1);">person</span>
+                
+                <div class="user-name-display">
+                    <span id="header-username">USER</span>
+                    <span id="header-credits" class="user-credits-display">LOADING</span>
+                </div>
+                
+                <span class="material-icons-outlined logout-btn-icon" id="logout-btn" title="Logout">logout</span>
+            </div>
+        </header>
+
+        <div class="chat-area" id="chat-feed">
+            <div class="welcome-container" id="welcome-screen">
+                <div class="ai-logo"><div class="ai-core"></div></div>
+                <h1 class="welcome-title">Ready for Input.</h1>
+                <p class="welcome-subtitle">Advanced Analysis & Interaction Protocol</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card" onclick="startWithPrompt('Analyze this file for security risks.')">
+                        <h3><span class="material-icons-outlined" style="color: #ff4444;">security</span> Security Audit</h3>
+                        <p>Upload logs or code for vulnerability assessment.</p>
+                    </div>
+                    <div class="feature-card" onclick="startWithPrompt('Generate an image of a futuristic cyberpunk city with neon lights. Aspect ratio 16:9.')">
+                        <h3><span class="material-icons-outlined" style="color: #44ff44;">image</span> J.A.R.V.I.S Genexig</h3>
+                        <p>Create visual representations using Stable Diffusion.</p>
+                    </div>
+                    <div class="feature-card" onclick="startWithPrompt('Summarize the attached document.')">
+                        <h3><span class="material-icons-outlined" style="color: #ffff44;">description</span> Data Synthesis</h3>
+                        <p>Compress large datasets into actionable insights.</p>
+                    </div>
+                    <div class="feature-card" onclick="startWithPrompt('Explain Quantum Entanglement simply.')">
+                        <h3><span class="material-icons-outlined" style="color: #4444ff;">school</span> Knowledge Base</h3>
+                        <p>Query the internal neural network.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="file-chip" id="file-chip">
+            <span class="material-icons-outlined" style="color: var(--accent-color);">attach_file</span>
+            <span id="file-name-display" style="color: #fff; font-size: 0.9rem;">file.txt</span>
+            <span class="material-icons-outlined" id="remove-file" style="color: #ff4444; cursor: pointer; margin-left: 5px;">close</span>
+        </div>
+
+        <div class="input-container">
+            <div class="input-bar">
+                <button class="tool-btn" id="upload-btn" title="Upload Analysis File">
+                    <span class="material-icons-outlined">add_link</span>
+                </button>
+                <input type="file" id="hidden-file-input" style="display: none;" accept=".txt,.pdf,.docx,.log,.js,.py,.html">
+                
+                <button class="tool-btn" id="web-search-toggle" title="Toggle Web Access">
+                    <span class="material-icons-outlined">public</span>
+                </button>
+
+                <input type="text" class="main-input" id="user-input" placeholder="Enter command or query...">
+                
+                <button class="send-btn" id="send-btn">
+                    <span class="material-icons-outlined">arrow_upward</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. System Configuration & State (Updated for User Isolation) ---
+        let userId = localStorage.getItem('jarvis_user_id');
+        if (!userId) {
+            window.location.href = 'login.html';
+        }
+
+        const state = {
+            userId: userId,
+            user: {
+                name: localStorage.getItem(userId + '_name') || 'User',
+                color: localStorage.getItem(userId + '_color') || '#00e5ff',
+                fontSize: localStorage.getItem(userId + '_font') || '16',
+                appLogo: localStorage.getItem(userId + '_app_logo') || null,
+                role: localStorage.getItem(userId + '_role') || 'guest',
+                credits: parseInt(localStorage.getItem(userId + '_credits') || '0'),
+                avatar: localStorage.getItem(userId + '_avatar'),
+                settings: JSON.parse(localStorage.getItem(userId + '_settings') || '{}'),
+                memories: JSON.parse(localStorage.getItem(userId + '_memory') || '[]')
+            },
+            chat: {
+                history: JSON.parse(localStorage.getItem(userId + '_history') || '[]'),
+                activeId: null,
+                currentFile: null,
+                webSearch: true
+            },
+            socket: null
+        };
+
+        // --- 2. DOM Elements ---
+        const els = {
+            sidebar: document.getElementById('sidebar'),
+            chatFeed: document.getElementById('chat-feed'),
+            welcome: document.getElementById('welcome-screen'),
+            input: document.getElementById('user-input'),
+            fileInput: document.getElementById('hidden-file-input'),
+            fileChip: document.getElementById('file-chip'),
+            fileName: document.getElementById('file-name-display'),
+            historyList: document.getElementById('history-list'),
+            settingsModal: document.getElementById('settings-modal'),
+            memoryModal: document.getElementById('memory-modal'),
+            memoriesList: document.getElementById('memories-list'),
+            newMemoryInput: document.getElementById('new-memory-input'),
+            addMemoryBtn: document.getElementById('add-memory-btn'),
+            viewMemoriesBtn: document.getElementById('view-memories-btn'),
+            clearMemoriesBtn: document.getElementById('clear-memories-btn'),
+            closeMemoryModal: document.getElementById('close-memory-modal'),
+            accentPicker: document.getElementById('accent-picker'),
+            
+            // New settings inputs
+            occupationInput: document.getElementById('occupation-input'),
+            aboutInput: document.getElementById('about-input'),
+            instructionsInput: document.getElementById('instructions-input'),
+            toneSelector: document.getElementById('tone-selector'),
+            resetSettingsBtn: document.getElementById('reset-settings'),
+
+            // Logo Elements
+            logoContainer: document.getElementById('app-logo-container'),
+            logoInput: document.getElementById('app-logo-input'),
+            defaultHelmet: document.getElementById('default-helmet-logo'),
+
+            // User Header Elements
+            headerName: document.getElementById('header-username'),
+            headerCredits: document.getElementById('header-credits'),
+            headerAvatar: document.getElementById('header-avatar'),
+            headerDefaultIcon: document.getElementById('header-default-icon'),
+            logoutBtn: document.getElementById('logout-btn')
+        };
+
+        // --- 3. Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            applySettings();
+            loadUserSettings();
+            applyAppLogo();
+            updateHeaderProfile();
+            renderHistory();
+            connectNetwork();
+            
+            if (window.pdfjsLib) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+            }
+        });
+
+        // --- 3.1 User Profile Functions ---
+        function updateHeaderProfile() {
+            els.headerName.innerText = state.user.name.toUpperCase();
+            
+            if (state.user.role === 'verified') {
+                els.headerCredits.innerText = "ACCESS: UNLIMITED";
+                els.headerCredits.style.color = state.user.color;
+            } else {
+                els.headerCredits.innerText = `CREDITS: ${state.user.credits}`;
+                els.headerCredits.style.color = state.user.credits < 10 ? '#ff4444' : '#8b9bb4';
+            }
+
+            if (state.user.avatar && state.user.avatar !== "undefined") {
+                els.headerAvatar.src = state.user.avatar;
+                els.headerAvatar.style.display = 'block';
+                els.headerDefaultIcon.style.display = 'none';
+            } else {
+                els.headerAvatar.style.display = 'none';
+                els.headerDefaultIcon.style.display = 'flex';
+            }
+        }
+
+        els.logoutBtn.addEventListener('click', () => {
+            if(confirm('Terminate Session?')) {
+                const keysToRemove = [
+                    'jarvis_user_id',
+                    state.userId + '_name',
+                    state.userId + '_email',
+                    state.userId + '_avatar',
+                    state.userId + '_role',
+                    state.userId + '_credits',
+                    state.userId + '_settings',
+                    state.userId + '_memory',
+                    state.userId + '_history',
+                    state.userId + '_color',
+                    state.userId + '_font',
+                    state.userId + '_app_logo'
+                ];
+                
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+                window.location.href = 'login.html';
+            }
+        });
+
+        function checkCredits() {
+            if (state.user.role === 'verified') return true;
+
+            if (state.user.credits > 0) {
+                state.user.credits--;
+                localStorage.setItem(state.userId + '_credits', state.user.credits.toString());
+                updateHeaderProfile();
+                return true;
+            } else {
+                alert("GUEST PROTOCOL: LIMIT REACHED. PLEASE LOG IN.");
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+
+        // --- 4. Settings & UI Customization ---
+        function loadUserSettings() {
+            const settings = state.user.settings;
+            
+            document.getElementById('username-input').value = settings.name || state.user.name;
+            els.occupationInput.value = settings.occupation || '';
+            els.aboutInput.value = settings.about || '';
+            els.instructionsInput.value = settings.instructions || '';
+            els.toneSelector.value = settings.tone || 'default';
+            els.accentPicker.value = state.user.color;
+            document.getElementById('fontsize-slider').value = state.user.fontSize;
+        }
+
+        function applySettings() {
+            document.documentElement.style.setProperty('--accent-color', state.user.color);
+            document.documentElement.style.setProperty('--accent-glow', state.user.color + '4D');
+            document.documentElement.style.setProperty('--msg-user-bg', state.user.color + '26');
+            document.body.style.fontSize = state.user.fontSize + 'px';
+        }
+
+        function saveUserSettings() {
+            const settings = {
+                name: document.getElementById('username-input').value,
+                occupation: els.occupationInput.value,
+                about: els.aboutInput.value,
+                instructions: els.instructionsInput.value,
+                tone: els.toneSelector.value,
+                preferences: state.user.settings.preferences || {}
+            };
+            
+            state.user.settings = settings;
+            state.user.name = settings.name;
+            
+            localStorage.setItem(state.userId + '_settings', JSON.stringify(settings));
+            localStorage.setItem(state.userId + '_name', settings.name);
+            localStorage.setItem(state.userId + '_color', state.user.color);
+            localStorage.setItem(state.userId + '_font', state.user.fontSize);
+            
+            applySettings();
+            updateHeaderProfile();
+        }
+
+        // Logo Handling
+        function applyAppLogo() {
+            if (state.user.appLogo) {
+                els.logoContainer.innerHTML = `<img src="${state.user.appLogo}" class="custom-logo-img" alt="Logo">`;
+            }
+        }
+        els.logoContainer.addEventListener('click', () => els.logoInput.click());
+        els.logoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64String = event.target.result;
+                    state.user.appLogo = base64String;
+                    localStorage.setItem(state.userId + '_app_logo', base64String);
+                    applyAppLogo();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Memory Management
+        function renderMemories() {
+            els.memoriesList.innerHTML = '';
+            
+            if (state.user.memories.length === 0) {
+                els.memoriesList.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No memories yet. Start chatting!</div>';
+                return;
+            }
+            
+            state.user.memories.forEach((memory, index) => {
+                const memoryDiv = document.createElement('div');
+                memoryDiv.className = 'memory-item';
+                memoryDiv.style.cssText = `
+                    background: rgba(255,255,255,0.05);
+                    border: 1px solid rgba(255,255,255,0.1);
+                    border-radius: 8px;
+                    padding: 12px;
+                    margin-bottom: 10px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                `;
+                
+                memoryDiv.innerHTML = `
+                    <div style="flex-grow: 1;">
+                        <div style="color: var(--accent-color); font-size: 0.9rem; margin-bottom: 5px;">
+                            ${new Date(memory.timestamp).toLocaleDateString()}
+                        </div>
+                        <div>${memory.content}</div>
+                    </div>
+                    <button class="delete-memory-btn" data-index="${index}" style="
+                        background: transparent;
+                        border: none;
+                        color: #ff4444;
+                        cursor: pointer;
+                        padding: 5px;
+                        border-radius: 4px;
+                        margin-left: 10px;
+                    ">
+                        <span class="material-icons-outlined" style="font-size: 18px;">delete</span>
+                    </button>
+                `;
+                
+                els.memoriesList.appendChild(memoryDiv);
+            });
+            
+            document.querySelectorAll('.delete-memory-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                    deleteMemory(index);
+                });
+            });
+        }
+
+        function addMemory(content, type = 'auto') {
+            const memory = {
+                id: Date.now(),
+                content: content,
+                type: type,
+                timestamp: new Date().toISOString()
+            };
+            
+            state.user.memories.push(memory);
+            
+            if (state.user.memories.length > 100) {
+                state.user.memories = state.user.memories.slice(-100);
+            }
+            
+            localStorage.setItem(state.userId + '_memory', JSON.stringify(state.user.memories));
+            
+            if (els.memoryModal.style.display !== 'none') {
+                renderMemories();
+            }
+        }
+
+        function deleteMemory(index) {
+            if (confirm('Delete this memory?')) {
+                state.user.memories.splice(index, 1);
+                localStorage.setItem(state.userId + '_memory', JSON.stringify(state.user.memories));
+                renderMemories();
+            }
+        }
+
+        function clearAllMemories() {
+            if (confirm('Clear ALL memories? This cannot be undone.')) {
+                state.user.memories = [];
+                localStorage.setItem(state.userId + '_memory', JSON.stringify([]));
+                renderMemories();
+            }
+        }
+
+        // --- 5. Event Listeners for Settings ---
+        document.getElementById('save-settings').addEventListener('click', () => {
+            state.user.color = els.accentPicker.value;
+            state.user.fontSize = document.getElementById('fontsize-slider').value;
+            
+            saveUserSettings();
+            els.settingsModal.style.display = 'none';
+        });
+
+        document.getElementById('open-settings').addEventListener('click', () => {
+            loadUserSettings();
+            els.settingsModal.style.display = 'flex';
+        });
+        
+        document.getElementById('close-modal').addEventListener('click', () => els.settingsModal.style.display = 'none');
+
+        els.viewMemoriesBtn.addEventListener('click', () => {
+            els.memoryModal.style.display = 'flex';
+            renderMemories();
+        });
+
+        els.closeMemoryModal.addEventListener('click', () => {
+            els.memoryModal.style.display = 'none';
+        });
+
+        els.addMemoryBtn.addEventListener('click', () => {
+            const content = els.newMemoryInput.value.trim();
+            if (content) {
+                addMemory(content, 'manual');
+                els.newMemoryInput.value = '';
+            }
+        });
+
+        els.newMemoryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const content = els.newMemoryInput.value.trim();
+                if (content) {
+                    addMemory(content, 'manual');
+                    els.newMemoryInput.value = '';
+                }
+            }
+        });
+
+        els.clearMemoriesBtn.addEventListener('click', clearAllMemories);
+
+        els.resetSettingsBtn.addEventListener('click', () => {
+            if (confirm('Reset all settings to default?')) {
+                state.user.color = '#00e5ff';
+                els.accentPicker.value = state.user.color;
+                
+                state.user.fontSize = '16';
+                document.getElementById('fontsize-slider').value = state.user.fontSize;
+                
+                document.getElementById('username-input').value = state.user.name;
+                els.occupationInput.value = '';
+                els.aboutInput.value = '';
+                els.instructionsInput.value = '';
+                els.toneSelector.value = 'default';
+                
+                applySettings();
+            }
+        });
+
+        // --- 6. File Handling Logic ---
+        document.getElementById('upload-btn').addEventListener('click', () => els.fileInput.click());
+
+        els.fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            els.fileChip.style.display = 'flex';
+            els.fileName.textContent = `Analyzing ${file.name}...`;
+
+            try {
+                let content = "";
+                if (file.type === "application/pdf") {
+                    content = await readPDF(file);
+                } else if (file.name.endsWith(".docx")) {
+                    content = await readDOCX(file);
+                } else {
+                    content = await file.text();
+                }
+
+                state.chat.currentFile = {
+                    name: file.name,
+                    content: content
+                };
+                
+                els.fileName.textContent = file.name;
+
+            } catch (err) {
+                console.error(err);
+                els.fileName.textContent = "Error Reading File";
+                setTimeout(() => {
+                    state.chat.currentFile = null;
+                    els.fileChip.style.display = 'none';
+                }, 2000);
+            }
+            els.fileInput.value = "";
+        });
+
+        document.getElementById('remove-file').addEventListener('click', () => {
+            state.chat.currentFile = null;
+            els.fileChip.style.display = 'none';
+        });
+
+        async function readPDF(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            let text = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                text += content.items.map(item => item.str).join(" ") + "\n";
+            }
+            return text;
+        }
+
+        async function readDOCX(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+            return result.value;
+        }
+
+        // --- 7. Enhanced Chat Logic with Memory Integration ---
+        function startWithPrompt(text) {
+            els.input.value = text;
+            sendMessage();
+        }
+
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+        els.input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+        function sendMessage() {
+            const text = els.input.value.trim();
+            if (!text && !state.chat.currentFile) return;
+
+            if (!checkCredits()) return;
+
+            if (!state.chat.activeId) createNewChat();
+
+            const userContext = getUserContextPrompt();
+            const memoryContext = getMemoryContext();
+            const toneContext = getToneInstructions();
+
+            let finalPrompt = text;
+            
+            if (state.chat.currentFile) {
+                addMessage('user', `[Attached: ${state.chat.currentFile.name}] ${text}`);
+                finalPrompt = `
+${userContext}
+${memoryContext}
+${toneContext}
+
+--- FILE CONTEXT: "${state.chat.currentFile.name}" ---
+${state.chat.currentFile.content.substring(0, 20000)}
+--- END FILE CONTEXT ---
+
+USER QUERY: ${text}`;
+                state.chat.currentFile = null;
+                els.fileChip.style.display = 'none';
+            } else {
+                addMessage('user', text);
+                finalPrompt = `
+${userContext}
+${memoryContext}
+${toneContext}
+
+USER QUERY: ${text}`;
+            }
+
+            els.input.value = '';
+            els.welcome.style.display = 'none';
+
+            const modelChoice = detectOptimalModel(text, state.chat.currentFile);
+            
+            if (state.socket && state.socket.readyState === WebSocket.OPEN) {
+                state.socket.send(JSON.stringify({
+                    type: "text_query",
+                    text: finalPrompt,
+                    user_name: state.user.name,
+                    user_context: state.user.settings,
+                    user_id: state.userId,
+                    web_search_enabled: state.chat.webSearch,
+                    model: modelChoice,
+                    auto_model_selection: true
+                }));
+            } else {
+                addMessage('ai', "⚠ Network Offline. Attempting Reconnection...");
+            }
+        }
+
+        function getUserContextPrompt() {
+            const settings = state.user.settings;
+            let context = `[USER PROFILE]
+Name: ${settings.name || state.user.name}`;
+            
+            if (settings.occupation) context += `\nOccupation: ${settings.occupation}`;
+            if (settings.about) context += `\nAbout: ${settings.about}`;
+            if (settings.instructions) context += `\nCustom Instructions: ${settings.instructions}`;
+            
+            return context;
+        }
+
+        function getMemoryContext() {
+            if (state.user.memories.length === 0) return '';
+            
+            let memories = state.user.memories.slice(-5).map(m => m.content).join('\n');
+            return `[PREVIOUS INTERACTIONS & MEMORIES]
+${memories}`;
+        }
+
+        function getToneInstructions() {
+            const tones = {
+                'default': 'Respond in a balanced, helpful tone.',
+                'professional': 'Respond formally and professionally. Use proper titles and maintain decorum.',
+                'friendly': 'Respond warmly and casually. Use emojis and friendly language.',
+                'candid': 'Be direct and honest. Don\'t sugarcoat.',
+                'quirky': 'Be playful and creative. Use humor and unconventional phrasing.',
+                'efficient': 'Be concise and to the point. Avoid unnecessary words.',
+                'nerdy': 'Use technical terms and detailed explanations. Show enthusiasm for complex topics.',
+                'cynical': 'Be skeptical and sarcastic. Question assumptions.'
+            };
+            
+            return `[RESPONSE STYLE]
+${tones[state.user.settings.tone] || tones.default}`;
+        }
+
+        function detectOptimalModel(text, fileContent = null) {
+            const textLower = text.toLowerCase();
+            
+            const codeKeywords = ['code', 'script', 'function', 'debug', 'algorithm', 'api', 'endpoint', 'program'];
+            if (codeKeywords.some(kw => textLower.includes(kw))) {
+                return 'deepseek-ai/deepseek-v3.1-terminus';
+            }
+            
+            const reasoningKeywords = ['analyze', 'compare', 'evaluate', 'explain', 'why', 'how', 'complex'];
+            if (reasoningKeywords.some(kw => textLower.includes(kw)) || 
+                (text.length > 200 && !textLower.includes('?'))) {
+                return 'meta/llama-3.1-405b-instruct';
+            }
+            
+            if (textLower.includes('image') || textLower.includes('picture') || 
+                textLower.includes('generate') || textLower.includes('create') ||
+                textLower.includes('draw') || textLower.includes('visual')) {
+                return 'genexig_mode';
+            }
+            
+            const simpleKeywords = ['hi', 'hello', 'hey', 'thanks', 'thank you', 'ok', 'yes', 'no'];
+            if (simpleKeywords.some(kw => textLower.includes(kw)) || text.length < 50) {
+                return 'meta/llama-3.1-70b-instruct';
+            }
+            
+            if (fileContent || textLower.includes('file') || textLower.includes('document')) {
+                return 'openai/gpt-oss-120b';
+            }
+            
+            return 'meta/llama-3.1-70b-instruct';
+        }
+
+        function addMessage(role, text) {
+            const div = document.createElement('div');
+            div.className = `message-row ${role}`;
+            div.innerHTML = `<div class="msg-bubble">${role === 'ai' ? marked.parse(text) : text}</div>`;
+            els.chatFeed.appendChild(div);
+            els.chatFeed.scrollTop = els.chatFeed.scrollHeight;
+
+            const chat = state.chat.history.find(c => c.id === state.chat.activeId);
+            if (chat) {
+                chat.messages.push({ role, text });
+                saveHistory();
+            }
+            return div.querySelector('.msg-bubble');
+        }
+
+        let currentStreamEl = null;
+        let streamBuffer = "";
+
+        function connectNetwork() {
+            state.socket = new WebSocket("wss://venice-postpupillary-coaxially.ngrok-free.dev/ws");
+            
+            state.socket.onopen = () => {
+                state.socket.send(JSON.stringify({
+                    type: "user_context",
+                    user_id: state.userId,
+                    user_data: {
+                        name: state.user.name,
+                        settings: state.user.settings,
+                        memories_count: state.user.memories.length
+                    }
+                }));
+            };
+
+            state.socket.onmessage = (e) => {
+                const msg = JSON.parse(e.data);
+                
+                if (msg.type === "llm_chunk") {
+                    if (!currentStreamEl) {
+                        currentStreamEl = addMessage('ai', "");
+                    }
+                    streamBuffer += msg.text;
+                    currentStreamEl.innerHTML = marked.parse(streamBuffer);
+                    els.chatFeed.scrollTop = els.chatFeed.scrollHeight;
+                }
+                else if (msg.type === "llm_end") {
+                    const chat = state.chat.history.find(c => c.id === state.chat.activeId);
+                    if (chat && chat.messages.length > 0) {
+                        chat.messages[chat.messages.length - 1].text = streamBuffer;
+                        saveHistory();
+                    }
+                    
+                    extractMemoriesFromResponse(streamBuffer);
+                    
+                    streamBuffer = "";
+                    currentStreamEl = null;
+                }
+                else if (msg.type === "extracted_memory") {
+                    if (msg.memory && !state.user.memories.some(m => m.content === msg.memory)) {
+                        addMemory(msg.memory, 'ai_extracted');
+                    }
+                }
+            };
+
+            state.socket.onclose = () => {
+                setTimeout(connectNetwork, 3000);
+            };
+        }
+
+        function extractMemoriesFromResponse(response) {
+            const sentences = response.split(/[.!?]+/);
+            const importantSentences = sentences.filter(s => {
+                const sentence = s.toLowerCase().trim();
+                return (
+                    (sentence.includes('you ') || sentence.includes('your ') || sentence.includes(state.user.name.toLowerCase())) &&
+                    (sentence.includes('like') || sentence.includes('prefer') || sentence.includes('enjoy') ||
+                     sentence.includes('hate') || sentence.includes('dislike') || sentence.includes('important')) &&
+                    sentence.length > 20
+                );
+            });
+            
+            if (importantSentences.length > 0) {
+                const memory = importantSentences[0].trim();
+                if (memory.length > 10 && !state.user.memories.some(m => m.content === memory)) {
+                    addMemory(memory, 'ai_extracted');
+                }
+            }
+        }
+
+        // --- 8. History Management ---
+        function createNewChat() {
+            const id = Date.now();
+            const newChat = {
+                id: id,
+                title: "New Sequence " + new Date().toLocaleTimeString(),
+                messages: []
+            };
+            state.chat.history.unshift(newChat);
+            state.chat.activeId = id;
+            
+            els.chatFeed.innerHTML = '';
+            els.chatFeed.appendChild(els.welcome);
+            els.welcome.style.display = 'flex';
+            
+            saveHistory();
+            renderHistory();
+        }
+
+        document.getElementById('new-chat-btn').addEventListener('click', createNewChat);
+
+        function deleteChat(id, event) {
+            event.stopPropagation();
+            if(!confirm("Purge this sequence logs?")) return;
+
+            state.chat.history = state.chat.history.filter(c => c.id !== id);
+            
+            if(state.chat.activeId === id) {
+                state.chat.activeId = null;
+                els.chatFeed.innerHTML = '';
+                els.chatFeed.appendChild(els.welcome);
+                els.welcome.style.display = 'flex';
+            }
+            
+            saveHistory();
+            renderHistory();
+        }
+
+        function loadChat(id) {
+            const chat = state.chat.history.find(c => c.id === id);
+            if (!chat) return;
+
+            state.chat.activeId = id;
+            els.welcome.style.display = 'none';
+            els.chatFeed.innerHTML = '';
+            
+            chat.messages.forEach(m => {
+                const div = document.createElement('div');
+                div.className = `message-row ${m.role}`;
+                div.innerHTML = `<div class="msg-bubble">${m.role === 'ai' ? marked.parse(m.text) : m.text}</div>`;
+                els.chatFeed.appendChild(div);
+            });
+            els.chatFeed.scrollTop = els.chatFeed.scrollHeight;
+            
+            els.sidebar.classList.remove('open');
+            renderHistory();
+        }
+
+        function renderHistory() {
+            els.historyList.innerHTML = '';
+            if(state.chat.history.length === 0) {
+                els.historyList.innerHTML = '<div style="padding:10px; color:#555; font-size:0.8rem;">NO LOGS FOUND</div>';
+                return;
+            }
+
+            const title = document.createElement('div');
+            title.className = 'history-group-title';
+            title.innerText = "Recent Logs";
+            els.historyList.appendChild(title);
+
+            state.chat.history.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = `history-item ${chat.id === state.chat.activeId ? 'active' : ''}`;
+                
+                let displayTitle = chat.title;
+                if(chat.messages.length > 0) {
+                    const firstMsg = chat.messages.find(m => m.role === 'user');
+                    if(firstMsg) displayTitle = firstMsg.text.substring(0, 25);
+                }
+
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="material-icons-outlined" style="font-size:16px;">chat_bubble_outline</span>
+                        <span class="history-text">${displayTitle}</span>
+                    </div>
+                    <span class="material-icons-outlined delete-chat">delete</span>
+                `;
+
+                item.onclick = () => loadChat(chat.id);
+                item.querySelector('.delete-chat').onclick = (e) => deleteChat(chat.id, e);
+                els.historyList.appendChild(item);
+            });
+        }
+
+        function saveHistory() {
+            localStorage.setItem(state.userId + '_history', JSON.stringify(state.chat.history));
+        }
+
+        document.getElementById('open-sidebar-btn').addEventListener('click', () => els.sidebar.classList.add('open'));
+        document.getElementById('close-sidebar-btn').addEventListener('click', () => els.sidebar.classList.remove('open'));
+        
+        document.getElementById('web-search-toggle').addEventListener('click', function() {
+            state.chat.webSearch = !state.chat.webSearch;
+            this.style.color = state.chat.webSearch ? state.user.color : 'var(--text-muted)';
+        });
+
+    </script>
+</body>
+</html>
