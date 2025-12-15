@@ -115,32 +115,69 @@
             text-overflow: ellipsis;
         }
 
-        /* LOGO STYLES */
+        /* LOGO STYLES - UPDATED FOR ARC LOGO */
         .app-logo-trigger {
-            width: 35px; 
-            height: 35px; 
+            width: 40px; 
+            height: 40px; 
             cursor: pointer;
             transition: transform 0.3s, filter 0.3s;
             display: flex; 
             align-items: center; 
             justify-content: center;
             flex-shrink: 0;
+            position: relative;
         }
         .app-logo-trigger:hover {
             transform: scale(1.1);
-            filter: drop-shadow(0 0 5px var(--accent-color));
+            filter: drop-shadow(0 0 8px var(--accent-color));
         }
-        .helmet-svg {
-            width: 100%; 
-            height: 100%;
-            fill: var(--accent-color);
-            filter: drop-shadow(0 0 2px var(--accent-glow));
-        }
-        .custom-logo-img {
+        
+        .arc-logo {
             width: 100%; 
             height: 100%; 
             object-fit: contain;
             border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-glow);
+            filter: brightness(1.2) contrast(1.1);
+            animation: logo-glow 3s infinite ease-in-out;
+            padding: 2px;
+        }
+        
+        @keyframes logo-glow {
+            0%, 100% { 
+                box-shadow: 0 0 15px var(--accent-glow);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 25px var(--accent-color), 0 0 40px var(--accent-glow);
+                transform: scale(1.03);
+            }
+        }
+
+        /* Logo glow effect */
+        .app-logo-trigger::before {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+            opacity: 0.3;
+            filter: blur(10px);
+            z-index: -1;
+            animation: pulse-ring 4s infinite ease-in-out;
+        }
+        
+        @keyframes pulse-ring {
+            0%, 100% { 
+                opacity: 0.2;
+                transform: scale(0.9);
+            }
+            50% { 
+                opacity: 0.4;
+                transform: scale(1.1);
+            }
         }
 
         .new-chat-btn {
@@ -325,9 +362,22 @@
             height: 32px; 
             border-radius: 50%;
             border: 2px solid var(--accent-color); 
-            object-fit: cover;
+            object-fit: contain;
             flex-shrink: 0;
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: avatar-glow 3s infinite alternate;
+            padding: 2px;
         }
+        
+        @keyframes avatar-glow {
+            0% { 
+                box-shadow: 0 0 5px var(--accent-glow);
+            }
+            100% { 
+                box-shadow: 0 0 15px var(--accent-color), 0 0 25px var(--accent-glow);
+            }
+        }
+        
         .logout-btn-icon {
             color: #ff4444; 
             cursor: pointer; 
@@ -353,7 +403,7 @@
             width: 100%;
         }
         
-        /* Welcome Screen */
+        /* Welcome Screen - UPDATED WITH PERFECTLY CENTERED ARC LOGO */
         .welcome-container {
             height: 100%; 
             display: flex; 
@@ -367,29 +417,80 @@
             box-sizing: border-box;
         }
         .ai-logo {
-            width: min(120px, 25vw); 
-            height: min(120px, 25vw);
+            width: min(180px, 30vw); 
+            height: min(180px, 30vw);
             border-radius: 50%;
-            border: 2px solid var(--accent-color);
-            box-shadow: 0 0 50px var(--accent-glow), inset 0 0 20px var(--accent-glow);
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 0 60px var(--accent-glow), inset 0 0 30px var(--accent-glow);
             position: relative; 
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             display: flex; 
             align-items: center; 
             justify-content: center;
             flex-shrink: 0;
+            overflow: hidden;
+            animation: logo-float 6s infinite ease-in-out;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
         }
-        .ai-core {
-            width: 50%; 
-            height: 50%; 
-            background: var(--accent-color); 
+        
+        @keyframes logo-float {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg);
+                box-shadow: 0 0 60px var(--accent-glow), inset 0 0 30px var(--accent-glow);
+            }
+            25% { 
+                transform: translateY(-10px) rotate(1deg);
+                box-shadow: 0 0 80px var(--accent-color), inset 0 0 40px var(--accent-glow);
+            }
+            50% { 
+                transform: translateY(0) rotate(0deg);
+                box-shadow: 0 0 60px var(--accent-glow), inset 0 0 30px var(--accent-glow);
+            }
+            75% { 
+                transform: translateY(5px) rotate(-1deg);
+                box-shadow: 0 0 70px var(--accent-color), inset 0 0 35px var(--accent-glow);
+            }
+        }
+        
+        .arc-center-logo {
+            width: 85%;
+            height: 85%;
+            object-fit: contain;
+            filter: brightness(1.5) contrast(1.2);
+            animation: center-logo-pulse 4s infinite ease-in-out;
             border-radius: 50%;
-            box-shadow: 0 0 30px var(--accent-color);
-            animation: pulse 3s infinite ease-in-out;
+            display: block;
+            margin: 0 auto;
         }
-        @keyframes pulse { 
-            0%, 100% { transform: scale(0.9); opacity: 0.8; } 
-            50% { transform: scale(1.1); opacity: 1; } 
+        
+        @keyframes center-logo-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: brightness(1.5) contrast(1.2) drop-shadow(0 0 20px var(--accent-glow));
+            }
+            50% { 
+                transform: scale(1.05);
+                filter: brightness(2) contrast(1.3) drop-shadow(0 0 40px var(--accent-color));
+            }
+        }
+        
+        .ai-logo::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+            opacity: 0.2;
+            filter: blur(30px);
+            z-index: -1;
+            animation: hologram-effect 8s infinite linear;
+        }
+        
+        @keyframes hologram-effect {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
         }
 
         .welcome-title { 
@@ -399,13 +500,26 @@
             word-break: break-word;
             padding: 0 10px;
             width: 100%;
+            text-shadow: 0 0 10px var(--accent-glow);
+            background: linear-gradient(90deg, var(--accent-color), #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: title-glow 3s infinite alternate;
         }
+        
+        @keyframes title-glow {
+            0% { text-shadow: 0 0 10px var(--accent-glow); }
+            100% { text-shadow: 0 0 20px var(--accent-color), 0 0 30px var(--accent-glow); }
+        }
+        
         .welcome-subtitle { 
             color: var(--text-muted); 
             margin-bottom: 30px;
             font-size: clamp(0.9rem, 2vw, 1rem);
             padding: 0 10px;
             width: 100%;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
         }
 
         .features-grid {
@@ -1155,12 +1269,12 @@
             
             /* Welcome Screen Tweaks */
             .ai-logo { 
-                width: 90px; 
-                height: 90px; 
+                width: 140px; 
+                height: 140px; 
             }
-            .ai-core { 
-                width: 45px; 
-                height: 45px; 
+            .arc-center-logo {
+                width: 80%;
+                height: 80%;
             }
             .welcome-title { 
                 font-size: 1.8rem; 
@@ -1270,6 +1384,15 @@
                 .sidebar {
                     width: 90vw;
                 }
+                
+                .ai-logo {
+                    width: 120px;
+                    height: 120px;
+                }
+                .arc-center-logo {
+                    width: 75%;
+                    height: 75%;
+                }
             }
             
             @media (max-width: 360px) {
@@ -1310,6 +1433,15 @@
                     min-width: 40px;
                     min-height: 40px;
                 }
+                
+                .ai-logo {
+                    width: 100px;
+                    height: 100px;
+                }
+                .arc-center-logo {
+                    width: 70%;
+                    height: 70%;
+                }
             }
         }
 
@@ -1343,6 +1475,15 @@
             
             .user-name-display {
                 font-size: 0.75rem;
+            }
+            
+            .ai-logo {
+                width: 90px;
+                height: 90px;
+            }
+            .arc-center-logo {
+                width: 65%;
+                height: 65%;
             }
         }
 
@@ -1437,6 +1578,16 @@
             .welcome-container {
                 justify-content: flex-start;
                 padding-top: 20px;
+            }
+            
+            .ai-logo {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 20px;
+            }
+            .arc-center-logo {
+                width: 75%;
+                height: 75%;
             }
         }
         
@@ -1603,10 +1754,10 @@
         <div class="sidebar-header">
             <div class="brand-container">
                 <span class="app-title">J.A.R.V.I.S.</span>
-                <div class="app-logo-trigger" id="app-logo-container" title="Click to upload logo">
-                    <svg class="helmet-svg" id="default-helmet-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C7.58 2 4 5.58 4 10v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-4.42-3.58-8-8-8zm0 2c3.31 0 6 2.69 6 6v1h-3.5l-1-3-1 3H9l-1-3-1 3H5v-1c0-3.31 2.69-6 6-6zm-4 9h2v4H8v-4zm6 4h-2v-4h2v4z"/>
-                    </svg>
+                <div class="app-logo-trigger" id="app-logo-container" title="J.A.R.V.I.S. AI System">
+                    <img src="https://jarvisai30.vercel.app/arc.png" 
+                         class="arc-logo" 
+                         alt="J.A.R.V.I.S. ARC Reactor">
                 </div>
                 <input type="file" id="app-logo-input" accept="image/*" style="display: none;">
             </div>
@@ -1647,8 +1798,12 @@
             <div style="flex-grow: 1;"></div>
             
             <div class="user-header-profile">
-                <img id="header-avatar" class="user-avatar-small" src="" style="display:none;">
-                <span id="header-default-icon" class="material-icons-outlined user-avatar-small" style="display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.1);">person</span>
+                <img id="header-avatar" class="user-avatar-small" src="https://jarvisai30.vercel.app/arc.png" 
+                     style="display: block; object-fit: contain;">
+                <span id="header-default-icon" class="material-icons-outlined user-avatar-small" 
+                      style="display: none; align-items: center; justify-content: center; background: rgba(255,255,255,0.1);">
+                    person
+                </span>
                 
                 <div class="user-name-display">
                     <span id="header-username">USER</span>
@@ -1661,7 +1816,11 @@
 
         <div class="chat-area" id="chat-feed">
             <div class="welcome-container" id="welcome-screen">
-                <div class="ai-logo"><div class="ai-core"></div></div>
+                <div class="ai-logo">
+                    <img src="https://jarvisai30.vercel.app/arc.png" 
+                         class="arc-center-logo"
+                         alt="J.A.R.V.I.S. ARC Reactor">
+                </div>
                 <h1 class="welcome-title">Ready for Input.</h1>
                 <p class="welcome-subtitle">Advanced Analysis & Interaction Protocol</p>
                 
@@ -1981,7 +2140,6 @@
         // --- 3. Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             applySettings();
-            applyAppLogo(); 
             updateHeaderProfile();
             renderHistory();
             loadUserPreferences();
@@ -2090,14 +2248,10 @@
                 els.headerCredits.style.color = state.user.credits < 10 ? '#ff4444' : '#8b9bb4';
             }
 
-            if (state.user.avatar && state.user.avatar !== "undefined") {
-                els.headerAvatar.src = state.user.avatar;
-                els.headerAvatar.style.display = 'block';
-                els.headerDefaultIcon.style.display = 'none';
-            } else {
-                els.headerAvatar.style.display = 'none';
-                els.headerDefaultIcon.style.display = 'flex';
-            }
+            // Always show ARC logo in header
+            els.headerAvatar.src = 'https://jarvisai30.vercel.app/arc.png';
+            els.headerAvatar.style.display = 'block';
+            els.headerDefaultIcon.style.display = 'none';
         }
 
         els.logoutBtn.addEventListener('click', () => {
@@ -2278,25 +2432,18 @@
             els.fontsizeSlider.value = state.user.fontSize;
         }
 
-        // Logo Handling
+        // Remove old logo handling functions since we're using the ARC logo by default
         function applyAppLogo() {
-            if (state.user.appLogo) {
-                els.logoContainer.innerHTML = `<img src="${state.user.appLogo}" class="custom-logo-img" alt="Logo">`;
-            }
+            // ARC logo is already set in HTML
         }
-        els.logoContainer.addEventListener('click', () => els.logoInput.click());
-        els.logoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const base64String = event.target.result;
-                    state.user.appLogo = base64String;
-                    localStorage.setItem('jarvis_app_logo', base64String);
-                    applyAppLogo();
-                };
-                reader.readAsDataURL(file);
-            }
+
+        // Logo container click now does nothing (or you can change this to something else)
+        els.logoContainer.addEventListener('click', () => {
+            // Optional: Add some feedback when clicking the logo
+            els.logoContainer.style.animation = 'none';
+            setTimeout(() => {
+                els.logoContainer.style.animation = '';
+            }, 100);
         });
 
         document.getElementById('save-settings').addEventListener('click', () => {
