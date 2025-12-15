@@ -1,364 +1,689 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
   <title>J.A.R.V.I.S. // Access Control</title>
+  <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins&amp;display=swap'>
   
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <!-- Google OAuth -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
-    :root { 
-      --primary: #00f3ff; 
-      --primary-glow: rgba(0, 243, 255, 0.4);
-      --bg-dark: #050505; 
-      --glass-panel: rgba(15, 15, 15, 0.85); /* Darker glass for better contrast */
-      --input-bg: #000000;
-      --text-main: #ffffff;
-      --text-muted: #888888;
-      --border-color: rgba(255, 255, 255, 0.15);
-      --error: #ff3333;
-      --success: #00ff88;
+    /* ============================================
+       EXACT COPY FROM style.css
+    ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary-color: #c6c3c3;
+      --second-color: #ffffff;
+      --black-color: #000000;
+    }
 
     body {
-      background-color: var(--bg-dark);
-      height: 100vh;
+      background-image: url("https://codingstella.com/wp-content/uploads/2024/01/download-6-scaled.jpeg");
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--second-color);
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    /* ============================================
+       J.A.R.V.I.S. Glassmorphism Card
+    ============================================ */
+    .login_box {
+      position: relative;
+      width: 450px;
+      backdrop-filter: blur(25px);
+      border: 2px solid var(--primary-color);
+      border-radius: 15px;
+      padding: 7.5em 2.5em 4em 2.5em;
+      color: var(--second-color);
+      box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Improved J.A.R.V.I.S. Header */
+    .login-header {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-color);
+      width: 200px;
+      height: 80px;
+      border-radius: 0 0 20px 20px;
+      z-index: 10;
+    }
+
+    .login-header h1 {
+      font-size: 26px;
+      color: var(--black-color);
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .login-header .subtitle {
+      font-size: 11px;
+      color: var(--black-color);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .login-header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -30px;
+      width: 30px;
+      height: 30px;
+      border-top-right-radius: 50%;
+      background: transparent;
+      box-shadow: 15px 0 0 0 var(--primary-color);
+    }
+
+    .login-header::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -30px;
+      width: 30px;
+      height: 30px;
+      border-top-left-radius: 50%;
+      background: transparent;
+      box-shadow: -15px 0 0 0 var(--primary-color);
+    }
+
+    /* ============================================
+       Input Fields (EXACT same as index.html)
+    ============================================ */
+    .input_box {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      margin: 20px 0;
+    }
+
+    .input-field {
+      width: 100%;
+      height: 55px;
+      font-size: 16px;
+      background: transparent;
+      color: var(--second-color);
+      padding-inline: 20px 50px;
+      border: 2px solid var(--primary-color);
+      border-radius: 30px;
+      outline: none;
+    }
+
+    .label {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      transition: 0.2s;
+      color: var(--primary-color);
+      pointer-events: none;
+    }
+
+    .input-field:focus ~ .label,
+    .input-field:valid ~ .label {
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      font-size: 14px;
+      background-color: var(--primary-color);
+      border-radius: 30px;
+      color: var(--black-color);
+      padding: 0 10px;
+    }
+
+    .icon {
+      position: absolute;
+      top: 18px;
+      right: 25px;
+      font-size: 20px;
+      color: var(--primary-color);
+    }
+
+       /* ============================================
+       Google Login Button - Glassmorphism Style
+    ============================================ */
+    .google-wrapper {
+      position: relative;
+      width: 100%;
+      height: 50px; /* EXACT same as .input-submit height */
+      margin: 20px 0;
+      border-radius: 30px; /* EXACT same as .input-submit */
+      backdrop-filter: blur(25px); /* Match main blur */
+      background: rgba(236, 236, 236, 0.1); /* Match .input-submit base */
+      border: 2px solid var(--primary-color); /* Same border */
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Rajdhani', sans-serif;
-      overflow: hidden;
-      position: relative;
+      transition: 0.3s; /* Add transition like .input-submit */
     }
 
-    /* Animated Grid Background */
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-image: 
-        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      z-index: -2;
-    }
-    
-    /* Vignette Effect */
-    body::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at center, transparent 0%, #000 90%);
-      z-index: -1;
+    .google-wrapper:hover {
+      background: rgba(255, 255, 255, 0.2); /* Hover effect */
     }
 
-    /* GLASS CARD CONTAINER */
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      background: var(--glass-panel);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Top Accent Line */
-    .login-card::before {
+    .google-wrapper::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary), transparent);
-      box-shadow: 0 0 15px var(--primary);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 30px;
     }
 
-    /* HEADER STYLES */
-    .header { text-align: center; margin-bottom: 25px; }
-    
-    .logo-container {
-      width: 60px; height: 60px;
-      margin: 0 auto 15px;
-      border: 2px solid var(--primary);
-      border-radius: 50%;
+    #googleSignInBtn {
+      position: relative;
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px var(--primary-glow), inset 0 0 10px var(--primary-glow);
-      background: rgba(0,0,0,0.5);
-    }
-    
-    .logo-icon { font-size: 32px; color: var(--primary); }
-    
-    h1 { 
-      font-family: 'Orbitron', sans-serif; 
-      font-size: 26px; 
-      letter-spacing: 4px; 
-      color: #fff; 
-      text-transform: uppercase; 
-      margin-bottom: 5px;
-      text-shadow: 0 0 10px var(--primary-glow);
-    }
-    
-    .subtitle { 
-      color: var(--text-muted); 
-      font-size: 11px; 
-      letter-spacing: 2px; 
-      text-transform: uppercase; 
-      font-weight: 600; 
-    }
-
-    /* INPUT STYLES - High Visibility */
-    .input-wrapper { margin-bottom: 15px; position: relative; }
-    
-    input {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid #333;
-      padding: 14px 15px;
-      border-radius: 6px;
-      color: #fff;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    /* Placeholder Visibility */
-    input::placeholder {
-      color: #666 !important; 
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
-      opacity: 1; 
-    }
-
-    input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
-      background: #0a0a0a;
-    }
-
-    /* BUTTONS */
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, rgba(0,243,255,0.1) 0%, rgba(0,243,255,0.2) 100%);
-      border: 1px solid var(--primary);
-      border-radius: 6px;
-      color: var(--primary);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 14px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 10px;
-      font-weight: bold;
-      text-shadow: 0 0 5px var(--primary-glow);
-    }
-
-    .btn-primary:hover {
-      background: var(--primary);
-      color: #000;
-      box-shadow: 0 0 25px var(--primary-glow);
-      text-shadow: none;
-    }
-
-    .btn-secondary {
-      background: none;
+      gap: 15px;
+      background: transparent;
       border: none;
-      color: var(--text-muted);
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 12px;
+      color: var(--second-color); /* White text like guest button */
+      font-size: 16px; /* EXACT same as .input-submit */
+      font-weight: 500; /* EXACT same as .input-submit */
       cursor: pointer;
-      margin-top: 15px;
-      transition: 0.3s;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      padding: 0 30px;
+      font-family: "Poppins", sans-serif; /* Match font */
     }
-    
-    .btn-secondary:hover { color: #fff; text-shadow: 0 0 8px #fff; }
 
-    /* DIVIDER */
+    #googleSignInBtn:hover {
+      color: var(--black-color); /* Match .input-submit hover text color */
+    }
+
+    #googleSignInBtn i {
+      font-size: 22px;
+    }
+ 
+    /* ============================================
+       Buttons (EXACT same as index.html)
+    ============================================ */
+    .input-submit {
+      width: 100%;
+      height: 50px;
+      background: #ececec;
+      font-size: 16px;
+      font-weight: 500;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+      color: var(--black-color);
+      margin-top: 10px;
+    }
+
+    .input-submit:hover {
+      background: var(--second-color);
+    }
+
+    .btn-guest {
+      width: 100%;
+      height: 50px;
+      background: transparent;
+      border: 2px solid var(--primary-color);
+      border-radius: 30px;
+      color: var(--second-color);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-guest:hover {
+      background: var(--primary-color);
+      color: var(--black-color);
+    }
+
+    /* ============================================
+       Divider
+    ============================================ */
     .divider {
       display: flex;
       align-items: center;
-      gap: 15px;
-      color: #555;
-      font-size: 10px;
-      letter-spacing: 1px;
+      justify-content: center;
       margin: 20px 0;
-      font-family: 'Orbitron';
+      color: var(--primary-color);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .line { flex: 1; height: 1px; background: #333; }
 
-    /* GOOGLE WRAPPER */
-    .google-wrapper {
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--primary-color);
+      margin: 0 15px;
+    }
+
+    /* ============================================
+       Links & Navigation - Improved Styling
+    ============================================ */
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      margin: 15px 0;
+      color: var(--primary-color);
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .remember-me input[type="checkbox"] {
+      accent-color: var(--primary-color);
+    }
+
+    .forgot button {
+      background: transparent;
+      border: none;
+      color: var(--primary-color);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 5px 0;
+    }
+
+    .forgot button:hover {
+      color: var(--second-color);
+      text-decoration: underline;
+    }
+
+    .login-nav {
       display: flex;
       justify-content: center;
-      width: 100%;
-      margin-bottom: 5px;
+      gap: 30px;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(198, 195, 195, 0.3);
     }
-    .g_id_signin iframe { margin: 0 auto !important; }
-    
-    /* Animations */
-    .view { display: none; animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    .view.active { display: block; }
-    
-    @keyframes slideIn {
+
+    .login-nav button {
+      background: transparent;
+      border: none;
+      color: var(--primary-color);
+      font-size: 15px;
+      cursor: pointer;
+      padding: 8px 16px;
+      font-weight: 500;
+      border-radius: 20px;
+      transition: all 0.3s;
+    }
+
+    .login-nav button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--second-color);
+    }
+
+    .register {
+      text-align: center;
+      margin-top: 25px;
+      color: var(--primary-color);
+      font-size: 15px;
+    }
+
+    .register button {
+      background: transparent;
+      border: none;
+      color: var(--second-color);
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+
+    .register button:hover {
+      text-decoration: underline;
+    }
+
+    /* ============================================
+       View Headers - Consistent Styling
+    ============================================ */
+    .view-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(198, 195, 195, 0.3);
+    }
+
+    .view-title {
+      font-size: 22px;
+      color: var(--second-color);
+      font-weight: 600;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .view-subtitle {
+      font-size: 13px;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    /* ============================================
+       View System
+    ============================================ */
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Status Messages */
+    /* ============================================
+       Status Messages
+    ============================================ */
     .status-msg {
       text-align: center;
-      font-size: 12px;
-      margin-top: 15px;
-      font-weight: 600;
-      min-height: 20px;
-      letter-spacing: 0.5px;
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--second-color);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    .text-error { color: var(--error); text-shadow: 0 0 10px rgba(255, 51, 51, 0.3); }
-    .text-success { color: var(--success); text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
 
-    .flex-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-    
-    /* Guest Button */
-    .btn-guest {
+    .text-error {
+      background: rgba(255, 51, 51, 0.1);
+      color: #ff3333;
+      border-color: rgba(255, 51, 51, 0.3);
+    }
+
+    .text-success {
+      background: rgba(0, 255, 136, 0.1);
+      color: #00ff88;
+      border-color: rgba(0, 255, 136, 0.3);
+    }
+
+    /* ============================================
+       Responsive Design
+    ============================================ */
+    @media only screen and (max-width: 564px) {
+      .wrapper {
+        padding: 20px;
+      }
+
+      .login_box {
+        padding: 7.5em 1.5em 4em 1.5em;
         width: 100%;
-        margin-top: 10px;
-        padding: 10px;
-        background: transparent;
-        border: 1px dashed #444;
-        color: #666;
-        font-family: 'Orbitron';
-        font-size: 10px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    .btn-guest:hover { border-color: var(--text-muted); color: #fff; }
+      }
 
+      .login-header {
+        width: 180px;
+        height: 75px;
+      }
+
+      .login-header h1 {
+        font-size: 22px;
+        letter-spacing: 2px;
+      }
+
+      .login-header .subtitle {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+      }
+
+      .login-nav {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .login-nav button {
+        width: 100%;
+        text-align: center;
+      }
+
+      .view-title {
+        font-size: 20px;
+      }
+    }
+
+    @media only screen and (max-width: 400px) {
+      .login_box {
+        padding: 7.5em 1em 4em 1em;
+      }
+
+      .login-header {
+        width: 160px;
+        height: 70px;
+      }
+
+      .login-header h1 {
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 <body>
-
-  <div class="login-card">
-    
-    <div class="header">
-      <div class="logo-container">
-        <span class="material-icons-round logo-icon">fingerprint</span>
-      </div>
+<div class="wrapper">
+  <div class="login_box">
+    <!-- Improved J.A.R.V.I.S. Header -->
+    <div class="login-header">
       <h1>J.A.R.V.I.S.</h1>
-      <div class="subtitle">System Identity Verification</div>
+      <div class="subtitle">Access Control</div>
     </div>
 
+    <!-- Login View -->
     <div id="view-login" class="view active">
-      
-      <div id="g_id_onload"
-           data-client_id="971723044178-n91t8i15nf9kgj4lj57kmst9lk3p8cii.apps.googleusercontent.com"
-           data-callback="handleCredentialResponse"
-           data-auto_prompt="false"
-           data-theme="filled_black">
+      <div class="view-header">
+        <div class="view-title">Login</div>
+        <div class="view-subtitle">System Identity Verification</div>
       </div>
-      <div class="google-wrapper">
-        <div class="g_id_signin"
-             data-type="standard"
-             data-shape="pill"
-             data-theme="filled_black"
-             data-text="continue_with"
-             data-size="large"
-             data-logo_alignment="left"
-             data-width="320">
+
+      <!-- Custom Google Login Button -->
+      <div class="google-wrapper" id="googleSignInBtn" onclick="handleGoogleSignIn()">
+        <i class='bx bxl-google'></i>
+        <span>Continue with Google</span>
+      </div>
+
+      <div class="divider">OR</div>
+
+      <!-- Email & Password Inputs -->
+      <div class="input_box">
+        <input type="email" id="l_email" class="input-field" required>
+        <label for="l_email" class="label">Email Address</label>
+        <i class="bx bx-user icon"></i>
+      </div>
+
+      <div class="input_box">
+        <input type="password" id="l_pass" class="input-field" required>
+        <label for="l_pass" class="label">Password</label>
+        <i class="bx bx-lock-alt icon"></i>
+      </div>
+
+      <div class="remember-forgot">
+        <div class="remember-me">
+          <input type="checkbox" id="remember">
+          <label for="remember">Remember me</label>
+        </div>
+        <div class="forgot">
+          <button onclick="switchView('forgot')">Forgot password?</button>
         </div>
       </div>
 
-      <div class="divider">
-        <div class="line"></div> OR <div class="line"></div>
+      <div class="input_box">
+        <input type="submit" class="input-submit" value="Initialize Session" onclick="doLogin()">
       </div>
 
-      <div class="input-wrapper">
-        <input type="email" id="l_email" placeholder="Email Address">
-      </div>
-      <div class="input-wrapper">
-        <input type="password" id="l_pass" placeholder="Password">
+      <button class="btn-guest" onclick="handleGuestMode()">Access Guest Mode</button>
+
+      <div class="login-nav">
+        <button onclick="switchView('register')">Create ID</button>
+        <button onclick="switchView('forgot')">Lost Access?</button>
       </div>
 
-      <button class="btn-primary" onclick="doLogin()">Initialize Session</button>
-      <button class="btn-guest" onclick="handleGuestMode()">// ACCESS GUEST MODE</button>
-
-      <div class="flex-row">
-        <button class="btn-secondary" onclick="switchView('register')">Create ID</button>
-        <button class="btn-secondary" onclick="switchView('forgot')">Lost Access?</button>
+      <div class="register">
+        <span>Don't have an account? <button onclick="switchView('register')">Register</button></span>
       </div>
     </div>
 
+    <!-- Register View -->
     <div id="view-register" class="view">
-      <div class="subtitle" style="text-align:center; margin-bottom:20px; color:#fff;">New User Registration</div>
-      
-      <div class="input-wrapper"><input type="text" id="r_name" placeholder="Full Name"></div>
-      <div class="input-wrapper"><input type="email" id="r_email" placeholder="Email Address"></div>
-      <div class="input-wrapper"><input type="password" id="r_pass" placeholder="Create Password"></div>
-      
-      <button class="btn-primary" onclick="doRegister()">Create Record</button>
-      <button class="btn-secondary" style="width:100%" onclick="switchView('login')">Return to Login</button>
+      <div class="view-header">
+        <div class="view-title">Register</div>
+        <div class="view-subtitle">Create New Identity</div>
+      </div>
+
+      <div class="input_box">
+        <input type="text" id="r_name" class="input-field" required>
+        <label for="r_name" class="label">Full Name</label>
+        <i class="bx bx-user icon"></i>
+      </div>
+
+      <div class="input_box">
+        <input type="email" id="r_email" class="input-field" required>
+        <label for="r_email" class="label">Email Address</label>
+        <i class="bx bx-envelope icon"></i>
+      </div>
+
+      <div class="input_box">
+        <input type="password" id="r_pass" class="input-field" required>
+        <label for="r_pass" class="label">Create Password</label>
+        <i class="bx bx-lock-alt icon"></i>
+      </div>
+
+      <div class="input_box">
+        <input type="submit" class="input-submit" value="Create Record" onclick="doRegister()">
+      </div>
+
+      <div class="login-nav">
+        <button onclick="switchView('login')">Back to Login</button>
+      </div>
     </div>
 
+    <!-- Forgot Password View -->
     <div id="view-forgot" class="view">
-      <div class="subtitle" style="text-align:center; margin-bottom:20px; color:#fff;">Recovery Protocol</div>
-      
-      <div class="input-wrapper"><input type="email" id="f_email" placeholder="Registered Email"></div>
-      
-      <button class="btn-primary" onclick="requestReset()">Send Reset Code</button>
-      <button class="btn-secondary" style="width:100%" onclick="switchView('login')">Cancel</button>
+      <div class="view-header">
+        <div class="view-title">Password Recovery</div>
+        <div class="view-subtitle">Reset Your Password</div>
+      </div>
+
+      <div class="input_box">
+        <input type="email" id="f_email" class="input-field" required>
+        <label for="f_email" class="label">Registered Email</label>
+        <i class="bx bx-envelope icon"></i>
+      </div>
+
+      <div class="input_box">
+        <input type="submit" class="input-submit" value="Send Reset Code" onclick="requestReset()">
+      </div>
+
+      <div class="login-nav">
+        <button onclick="switchView('login')">Back to Login</button>
+        <button onclick="switchView('register')">Create Account</button>
+      </div>
     </div>
 
+    <!-- Reset Password View -->
     <div id="view-reset" class="view">
-      <div class="subtitle" style="text-align:center; margin-bottom:20px; color:#fff;">Identity Verification</div>
-      
-      <div class="input-wrapper">
-        <input type="text" id="rs_code" placeholder="6-Digit Code" maxlength="6" style="text-align:center; letter-spacing:5px; font-weight:bold;">
+      <div class="view-header">
+        <div class="view-title">Verify Identity</div>
+        <div class="view-subtitle">Enter Verification Code</div>
       </div>
-      <div class="input-wrapper">
-        <input type="password" id="rs_pass" placeholder="New Password">
+
+      <div class="input_box">
+        <input type="text" id="rs_code" class="input-field" maxlength="6" required 
+               style="text-align: center; letter-spacing: 15px; font-size: 20px; font-weight: bold;">
+        <label for="rs_code" class="label">6-Digit Code</label>
+        <i class="bx bx-key icon"></i>
       </div>
-      
-      <button class="btn-primary" onclick="confirmReset()">Update Credentials</button>
+
+      <div class="input_box">
+        <input type="password" id="rs_pass" class="input-field" required>
+        <label for="rs_pass" class="label">New Password</label>
+        <i class="bx bx-lock-alt icon"></i>
+      </div>
+
+      <div class="input_box">
+        <input type="submit" class="input-submit" value="Update Credentials" onclick="confirmReset()">
+      </div>
+
+      <div class="login-nav">
+        <button onclick="switchView('login')">Back to Login</button>
+      </div>
     </div>
 
+    <!-- Status Message Area -->
     <div id="status-msg" class="status-msg"></div>
-
   </div>
+</div>
 
-  <script>
+<!-- Hidden Google OAuth Button -->
+<div id="g_id_onload"
+     data-client_id="971723044178-n91t8i15nf9kgj4lj57kmst9lk3p8cii.apps.googleusercontent.com"
+     data-callback="handleCredentialResponse"
+     data-auto_prompt="false">
+</div>
+
+<!-- ORIGINAL JAVASCRIPT (Updated for custom Google button) -->
+<script>
     // ==========================================================
     // 1. SYSTEM CONFIGURATION
     // ==========================================================
     
-    // REPLACE THIS with your actual Ngrok URL
     const API_URL = "https://f1bffca0fe56.ngrok-free.app";
-    
-    // The main chatbot file
-    const MAIN_APP_URL = "index.html"; 
+    const MAIN_APP_URL = "index.html";
 
-    // CHECK SESSION ON LOAD (Logic from your original file)
-    // If a user is already verified, we skip the login screen entirely.
+    // Check existing session
     if(localStorage.getItem('jarvis_role')) {
-      window.location.href = MAIN_APP_URL; 
+      window.location.href = MAIN_APP_URL;
     }
 
     // ==========================================================
@@ -373,25 +698,21 @@
     function showMsg(text, type='neutral') {
       const el = document.getElementById('status-msg');
       el.innerText = text;
-      el.className = 'status-msg'; 
+      el.className = 'status-msg';
       if(type === 'error') el.classList.add('text-error');
       if(type === 'success') el.classList.add('text-success');
     }
 
-    // CENTRALIZED REDIRECTION LOGIC
     function enterJarvis(userData, role='verified') {
       console.log("Redirecting to J.A.R.V.I.S...");
       
-      // 1. Save Session Data (Persisting user like in your original file)
       localStorage.setItem('jarvis_user', userData.name || "User");
       localStorage.setItem('jarvis_role', role);
       if(userData.email) localStorage.setItem('jarvis_email', userData.email);
       if(userData.picture) localStorage.setItem('jarvis_avatar', userData.picture);
       
-      // 2. Visual Feedback
       showMsg("Access Granted. Loading Interface...", "success");
 
-      // 3. Robust Redirect (using window.location.href as per your file)
       setTimeout(() => {
         window.location.href = MAIN_APP_URL;
       }, 700);
@@ -410,13 +731,25 @@
     // 3. AUTHENTICATION LOGIC
     // ==========================================================
 
-    // --- GOOGLE OAUTH ---
+    // Custom Google Sign-in Handler
+    function handleGoogleSignIn() {
+      showMsg("Initializing Google Sign-in...", "neutral");
+      
+      // Trigger Google's built-in sign-in
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.prompt();
+      } else {
+        showMsg("Google Sign-in not available. Please refresh.", "error");
+      }
+    }
+
+    // Google OAuth Callback
     function handleCredentialResponse(response) {
       try {
         const payload = decodeJwt(response.credential);
         showMsg("Verifying Biometrics...", "neutral");
 
-        // Send Welcome Email (Fire and forget, don't wait for it)
+        // Send Welcome Email
         fetch(`${API_URL}/send_welcome`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -425,8 +758,8 @@
 
         // Login immediately
         enterJarvis({
-          name: payload.name, 
-          email: payload.email, 
+          name: payload.name,
+          email: payload.email,
           picture: payload.picture
         });
 
@@ -462,7 +795,7 @@
       }
     }
 
-    // --- REGISTER (Auto-Login included) ---
+    // --- REGISTER ---
     async function doRegister() {
       const name = document.getElementById('r_name').value;
       const email = document.getElementById('r_email').value;
@@ -488,25 +821,25 @@
       }
     }
 
-    // --- GUEST MODE (Restored from your file) ---
+    // --- GUEST MODE ---
     function handleGuestMode() {
-        showMsg("Initializing Guest Protocols...", "success");
-        setTimeout(() => {
-            localStorage.setItem('jarvis_user', 'Guest User');
-            localStorage.setItem('jarvis_role', 'guest');
-            localStorage.removeItem('jarvis_avatar');
-            window.location.href = MAIN_APP_URL;
-        }, 500);
+      showMsg("Initializing Guest Protocols...", "success");
+      setTimeout(() => {
+        localStorage.setItem('jarvis_user', 'Guest User');
+        localStorage.setItem('jarvis_role', 'guest');
+        localStorage.removeItem('jarvis_avatar');
+        window.location.href = MAIN_APP_URL;
+      }, 500);
     }
 
     // --- PASSWORD RECOVERY ---
-    let recoveryEmail = ""; 
-    
+    let recoveryEmail = "";
+
     async function requestReset() {
       recoveryEmail = document.getElementById('f_email').value;
       if(!recoveryEmail) return showMsg("Email required", "error");
       showMsg("Contacting Server...", "neutral");
-      
+
       try {
         await fetch(`${API_URL}/forgot-password`, {
           method: 'POST', headers: {'Content-Type':'application/json'},
@@ -532,7 +865,7 @@
 
         if(res.ok) {
           showMsg("Password Updated. Logging in...", "success");
-          setTimeout(() => switchView('login'), 1500); 
+          setTimeout(() => switchView('login'), 1500);
         } else {
           showMsg("Invalid Code.", "error");
         }
@@ -540,7 +873,16 @@
         showMsg("Update Failed", "error");
       }
     }
+
+    // Initialize Google Sign-in
+    window.onload = function() {
+      if (typeof google !== 'undefined') {
+        google.accounts.id.initialize({
+          client_id: "971723044178-n91t8i15nf9kgj4lj57kmst9lk3p8cii.apps.googleusercontent.com",
+          callback: handleCredentialResponse
+        });
+      }
+    };
   </script>
 </body>
 </html>
-
